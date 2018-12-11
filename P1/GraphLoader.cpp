@@ -24,12 +24,19 @@ void GraphLoader::removeZeroDegreeVertices()
 
 	for (auto i : neighbors)
 	{
+		if (i.second.empty())
+		{
+			zerodegree.push_back(i.first);
+			continue;
+		}
 		if (i.first != shouldbe)
 		{
 			rename.insert(std::make_pair(i.first, shouldbe));
 		}
 		++shouldbe;
 	}
+	for (auto const i : zerodegree)
+		neighbors.erase(i);
 
 	for (auto const& i : rename)
 	{
@@ -46,7 +53,7 @@ void GraphLoader::removeZeroDegreeVertices()
 
 void GraphLoader::registerVertex(size_t n)
 {
-	zerodegree.push_back(n);
+	neighbors[n];
 	return;
 }
 
@@ -80,7 +87,6 @@ void GraphLoader::deleteVertex(System::String^ n)
 		throw std::exception("Unexpected Error");
 	}
 	neighbors.erase(vertex);
-	// delete from zerodegree as well
 }
 
 void GraphLoader::deleteEdge(System::String^ a, System::String^ b)
@@ -101,7 +107,7 @@ void GraphLoader::deleteEdge(System::String^ a, System::String^ b)
 	return;
 }
 
-std::unordered_set<int> GraphLoader::returnAdjacent(System::String^ name)
+std::set<size_t> GraphLoader::returnAdjacent(System::String^ name)
 {
 	size_t vertex;
 	try
@@ -145,7 +151,6 @@ void GraphLoader::load(std::istream& is)
 		neighbors[left].insert(right);
 		neighbors[right].insert(left);
 	}
-	removeZeroDegreeVertices();
 }
 
 bool LShape::doIntersect(LShape& a, LShape& b) const

@@ -33,7 +33,7 @@ class LIntersectionGraph
 public:
 	
 	std::vector<LShape> shapes;
-	LIntersectionGraph(std::map<size_t, std::unordered_set<int>>& neighbors);
+	LIntersectionGraph(std::map<size_t, std::set<size_t>>& neighbors);
 	void printResult() const;
 	bool createLGraph(void);
 };

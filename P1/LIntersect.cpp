@@ -18,7 +18,7 @@
 // constructor
 // takes in graph in the form of map of vertices to its neighbours
 
-LIntersectionGraph::LIntersectionGraph(std::map<size_t, std::unordered_set<int>>& neighbors)
+LIntersectionGraph::LIntersectionGraph(std::map<size_t, std::set<size_t>>& neighbors)
 {
 	// initializes all LShapes to zeroes;
 	gl.neighbors = neighbors;

@@ -123,6 +123,7 @@ System::Void P1::MyForm::button_MouseClick(System::Object^  sender, System::Wind
 System::Void P1::MyForm::button2_Click(System::Object^  sender, System::EventArgs^  e)
 {
 	// do magic :)
+	gl.removeZeroDegreeVertices();
 	LIntersectionGraph igraph(gl.neighbors);
 	bool exists = igraph.createLGraph();
 	
@@ -133,7 +134,7 @@ System::Void P1::MyForm::button2_Click(System::Object^  sender, System::EventArg
 	{
 		int width = pictureBox2->Width;
 		int heigth = pictureBox2->Height;
-		int count = igraph.shapes.size();
+		size_t count = igraph.shapes.size();
 
 		int stepUp = heigth / (count + 1);
 		int stepAcross = width / (count + 1);

@@ -11,20 +11,21 @@
 
 class GraphLoader
 {
-	void removeZeroDegreeVertices();
 	std::vector<size_t> zerodegree;
 
 public:
-	std::map<size_t, std::unordered_set<int>> neighbors;
+	std::map<size_t, std::set<size_t>> neighbors;
 	void load(std::istream& is);
 	void loading(System::String^ file);
 
-	std::unordered_set<int> returnAdjacent(System::String^ name);
+	std::set<size_t> returnAdjacent(System::String^ name);
 
 	void registerVertex(size_t n);
 	void registerEdge(System::String^ a, System::String^ b);
 	void deleteVertex(System::String^ n);
 	void deleteEdge(System::String^ a, System::String^ b);
+
+	void removeZeroDegreeVertices();
 };
 
 class LShape
