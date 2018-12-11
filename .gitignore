@@ -33,3 +33,7 @@
 
 # P1/x64 files
 P1/x64/*
+
+# .vs and x64 folders
+/.vs/*
+/x64/*
