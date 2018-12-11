@@ -12,9 +12,11 @@
 class GraphLoader
 {
 	std::vector<size_t> zerodegree;
+	std::map<size_t, std::set<size_t>> fixed_neighbors;
 
 public:
 	std::map<size_t, std::set<size_t>> neighbors;
+
 	void load(std::istream& is);
 	void loading(System::String^ file);
 
@@ -25,7 +27,7 @@ public:
 	void deleteVertex(System::String^ n);
 	void deleteEdge(System::String^ a, System::String^ b);
 
-	void removeZeroDegreeVertices();
+	std::map<size_t, std::set<size_t>>& removeZeroDegreeVertices();
 };
 
 class LShape

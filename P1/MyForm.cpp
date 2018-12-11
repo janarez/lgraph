@@ -123,12 +123,15 @@ System::Void P1::MyForm::button_MouseClick(System::Object^  sender, System::Wind
 System::Void P1::MyForm::button2_Click(System::Object^  sender, System::EventArgs^  e)
 {
 	// do magic :)
-	gl.removeZeroDegreeVertices();
-	LIntersectionGraph igraph(gl.neighbors);
+	LIntersectionGraph igraph(gl.removeZeroDegreeVertices());
 	bool exists = igraph.createLGraph();
 	
 	Graphics^ g;
 	g = pictureBox2->CreateGraphics();
+
+	// make sure output window is empty -> whiten l graph picturebox
+	pictureBox2->Image = nullptr;
+	pictureBox2->Refresh();
 	
 	if (exists)
 	{

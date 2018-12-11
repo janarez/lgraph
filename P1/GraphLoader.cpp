@@ -17,12 +17,14 @@
 // for converting from System::String^ to std::string
 #include <msclr\marshal_cppstd.h>
 
-void GraphLoader::removeZeroDegreeVertices()
+std::map<size_t, std::set<size_t>>& GraphLoader::removeZeroDegreeVertices()
 {
+	fixed_neighbors = neighbors;
+	zerodegree.clear();
 	size_t shouldbe = 1;
 	std::map<size_t, size_t> rename;
 
-	for (auto i : neighbors)
+	for (auto i : fixed_neighbors)
 	{
 		if (i.second.empty())
 		{
@@ -36,19 +38,20 @@ void GraphLoader::removeZeroDegreeVertices()
 		++shouldbe;
 	}
 	for (auto const i : zerodegree)
-		neighbors.erase(i);
+		fixed_neighbors.erase(i);
 
 	for (auto const& i : rename)
 	{
-		neighbors.insert(std::make_pair(rename[i.first], neighbors[i.first]));
-		neighbors.erase(i.first);
-		for (auto& j : neighbors[rename[i.first]])
+		fixed_neighbors.insert(std::make_pair(rename[i.first], fixed_neighbors[i.first]));
+		fixed_neighbors.erase(i.first);
+		for (auto& j : fixed_neighbors[rename[i.first]])
 		{
-			neighbors[j].erase(i.first);
-			neighbors[j].insert(rename[i.first]);
+			fixed_neighbors[j].erase(i.first);
+			fixed_neighbors[j].insert(rename[i.first]);
 
 		}
 	}
+	return fixed_neighbors;
 }
 
 void GraphLoader::registerVertex(size_t n)
@@ -144,12 +147,19 @@ void GraphLoader::load(std::istream& is)
 		ss.clear();
 		ss.str(line);
 		// knowing there are only two numbers on each line
-		getline(ss, line, ' ');
-		int left = stoi(line);
-		getline(ss, line, ' ');
-		int right = stoi(line);
-		neighbors[left].insert(right);
-		neighbors[right].insert(left);
+		try
+		{
+			getline(ss, line, ' ');
+			int left = stoi(line);
+			getline(ss, line, ' ');
+			int right = stoi(line);
+			neighbors[left].insert(right);
+			neighbors[right].insert(left);
+		}
+		catch (const std::exception&)
+		{
+			throw std::exception("File must be formatted such that there is one edge on each line. Vertices are numbers.");
+		}	
 	}
 }
 
