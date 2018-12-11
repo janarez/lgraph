@@ -136,6 +136,7 @@
     <ClCompile Include="LIntersect.cpp" />
     <ClCompile Include="GraphLoader.cpp" />
     <ClCompile Include="MyForm.cpp" />
+    <ClCompile Include="PartialOrder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LIntersect.h" />
@@ -143,6 +144,7 @@
     <ClInclude Include="MyForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="PartialOrder.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MyForm.resx">

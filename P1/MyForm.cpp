@@ -137,7 +137,8 @@ System::Void P1::MyForm::button2_Click(System::Object^  sender, System::EventArg
 	{
 		int width = pictureBox2->Width;
 		int heigth = pictureBox2->Height;
-		size_t count = igraph.shapes.size();
+		// fixed in cum branch, might need fixing because indexing was changed
+		size_t count = igraph.shapes.size() -1;
 
 		int stepUp = heigth / (count + 1);
 		int stepAcross = width / (count + 1);
