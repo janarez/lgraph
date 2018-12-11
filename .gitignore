@@ -30,3 +30,6 @@
 *.exe
 *.out
 *.app
+
+# P1/x64 files
+P1/x64/*
