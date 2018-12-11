@@ -133,11 +133,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="graph.cpp" />
+    <ClCompile Include="LIntersect.cpp" />
+    <ClCompile Include="GraphLoader.cpp" />
     <ClCompile Include="MyForm.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="graph.h" />
+    <ClInclude Include="LIntersect.h" />
+    <ClInclude Include="GraphLoader.h" />
     <ClInclude Include="MyForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>

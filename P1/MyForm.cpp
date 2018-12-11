@@ -1,5 +1,6 @@
 #include "MyForm.h"
-#include "graph.h"
+#include "LIntersect.h"
+#include "GraphLoader.h"
 #include <vector>
 
 
@@ -196,4 +197,7 @@ System::Void P1::MyForm::button3_Click(System::Object^  sender, System::EventArg
 			this->Controls->Remove(b);
 		}
 	}
+	// reset all form variables
+	vertexcount = 0;
+	first = true;
 }
