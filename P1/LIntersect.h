@@ -30,9 +30,20 @@ class LIntersectionGraph
 	bool updateCombination();
 	void insertPointsIntoL(void);
 	bool updatePermutation();
+
+	void deduceDirections(void);
+	void guessDirections(size_t counter);
+	bool tryToFind(void);
+	void deduceStopIntervals(void);
+	void doPartialOrder(void);
+
 public:
 	
 	std::vector<LShape> shapes;
+	// -1 is left, 1 is right, 0 is undecide
+	std::vector<int> directions;
+	std::vector<int> stops;
+
 	LIntersectionGraph(std::map<size_t, std::set<size_t>>& neighbors);
 	void printResult() const;
 	bool createLGraph(void);
