@@ -23,12 +23,14 @@ class LIntersectionGraph
 	size_t max = 0;
 	LShape ls;
 	GraphLoader gl;
-	
+	PartialOrder cum(max);
+
 	void deduceDirections(void);
 	void guessDirections(size_t counter);
 	bool tryToFind(void);
 	void deduceStopIntervals(void);
 	bool doPartialOrder(void);
+	void fillShapes(void);
 
 public:
 

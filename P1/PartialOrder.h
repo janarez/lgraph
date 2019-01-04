@@ -12,15 +12,17 @@
 
 class PartialOrder
 {
-	// saves order: 1 means row entry is below column entry, -1 above, 0 undetermined 
+	// saves order: 1 means row entry is below column entry, -1 above, 0 undetermined
 	std::vector<std::vector<int>> cum;
 	size_t max;
 
 public:
 	bool add(size_t higher, size_t lower);
 	bool transitivity(size_t higher, size_t lower);
+	bool createCombination(std::vector<size_t>& available,std::vector<size_t>& result);
 
-	PartialOrder(size_t max) 
+
+	PartialOrder(size_t max)
 	{
 		this->max = max;
 		// initialize the 2d [max]*[max] structure to zeroes

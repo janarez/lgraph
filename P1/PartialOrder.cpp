@@ -58,3 +58,29 @@ bool PartialOrder::add(size_t higher, size_t lower)
 	}
 	return true;
 }
+
+// available holds yet unused numbers, result the combination
+// returns flag if the combination is valid
+bool PartialOrder::createCombination(std::vector<size_t>& available, std::vector<size_t>& result)
+{
+	std::vector<size_t> combination(max+1);
+
+	// first number
+	for (auto i : available)
+	{
+		// check move validity
+		for (auto j : available))
+		{
+			if (i != j)
+			{
+				if (cum[i][j] == -1)
+					return false;
+			}
+		}
+		// proceed with next position, mark this one unavailable
+		available.erase(std::find(avaiable.begin(),available.end(),i));
+		result.pushback(i);
+		createCombination(available, result)
+	}
+	return true;
+}

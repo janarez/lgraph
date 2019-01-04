@@ -29,6 +29,7 @@ LIntersectionGraph::LIntersectionGraph(std::map<size_t, std::set<size_t>>& neigh
 	deduceDirections();
 }
 
+// -1 is left, 1 is right, 0 is undecide
 void LIntersectionGraph::deduceDirections(void)
 {
 	// 0 index unused
@@ -52,16 +53,22 @@ void LIntersectionGraph::deduceDirections(void)
 	return;
 }
 
-void LIntersectionGraph::guessDirections(size_t counter)
+// this is a recursive functions that through direction guessing proceeds to find solution
+// all possible directions are guessed and as such the complexity is O(2^N)
+// first run with counter = 1 since dir[1] is set already
+bool LIntersectionGraph::guessDirections(size_t counter)
 {
 	// marks valid directions configuration
 	bool dirOK = true;
+	// do guessing for all nonset directions
 	for (size_t i = counter+1; i <= max; ++i)
 	{
-		if (i == 0)
+		if (directions[i] == 0)
 		{
+			// all preceeding vertices are correct and so only higher vertices are checked
 			auto it = gl.neighbors[i].upper_bound(i);
-			
+
+			// first guess left
 			directions[i] = -1;
 			while (it != gl.neighbors[i].end())
 			{
@@ -71,9 +78,13 @@ void LIntersectionGraph::guessDirections(size_t counter)
 					directions[*it] = -1;
 				++it;
 			}
+			// next vertex and check if solution was found
 			if (dirOK)
-				guessDirections(i);
-
+			{
+				if (guessDirections(i))
+					return true;
+			}
+			// then guess right
 			directions[i] = 1;
 			while (it != gl.neighbors[i].begin())
 			{
@@ -84,17 +95,20 @@ void LIntersectionGraph::guessDirections(size_t counter)
 				--it;
 			}
 			if (dirOK)
-				guessDirections(i);
+			{
+				if (guessDirections(i))
+					return true;
+			}
 		}
 	}
-	bool found = tryToFind();
-	return;
+	// look for solution
+	return = tryToFind();
 }
 
 bool LIntersectionGraph::tryToFind(void)
 {
 	// all directions must be set
-	if (std::find(directions.begin(), directions.end(), 0) == directions.end())	
+	if (std::find(directions.begin(), directions.end(), 0) == directions.end())
 		return false;
 
 	// try to find the l graph
@@ -104,6 +118,8 @@ bool LIntersectionGraph::tryToFind(void)
 	return false;
 }
 
+// the minimal value for the side coordinate
+// correct directions are passed
 void LIntersectionGraph::deduceStopIntervals(void)
 {
 	for (size_t left = 1; left <= max; ++left)
@@ -111,13 +127,13 @@ void LIntersectionGraph::deduceStopIntervals(void)
 		for (auto right : gl.neighbors[left])
 		{
 			// right must reach at least to left
-			if (left == -1 && right == -1)
+			if (directions[left] == -1 && directions[right] == -1)
 			{
 				stops[right] = left;
 				// reach to min vertex
 				break;
 			}
-			else if (left == 1 && right == 1)
+			else if (directions[left] == 1 && directions[right] == 1)
 			{
 				stops[left] = right;
 				// reach to max vertex
@@ -127,12 +143,13 @@ void LIntersectionGraph::deduceStopIntervals(void)
 	return;
 }
 
+// creates cum from so far known data
+// returns if cum exists
 bool LIntersectionGraph::doPartialOrder(void)
 {
 	std::vector<int> allN(max);
 	std::iota(allN.begin(), allN.end(), 1);
 
-	PartialOrder cum(max);
 	bool cumIsOK = true;
 
 	for (size_t left = 1; left <= max; ++left)
@@ -182,9 +199,29 @@ bool LIntersectionGraph::doPartialOrder(void)
 	return true;
 }
 
+void LIntersectionGraph::fillShapes(void)
+{
+	for (size_t i = 0; i < max; ++i)
+	{
+		shapes[i].up = i + 1;
+		shapes[i].bend = i; // actually result from cum
+		shapes[i].side = stops[i + 1];
+
+	}
+	return;
+}
+
 bool LIntersectionGraph::createLGraph(void)
 {
-	
+	if (!guessDirections(0))
+	{
+		// wait for correct directions
+	}
+	else
+	{
+		// solution exists, fill in lshapes
+		fillShapes();
+	}
 	return false;
 }
 
