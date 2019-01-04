@@ -20,6 +20,7 @@ public:
 	bool add(size_t higher, size_t lower);
 	bool transitivity(size_t higher, size_t lower);
 	bool createCombination(std::vector<size_t>& available,std::vector<size_t>& result);
+	bool createCombinationRecursion(void);
 
 
 	PartialOrder(size_t max)

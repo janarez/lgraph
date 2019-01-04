@@ -63,9 +63,7 @@ bool PartialOrder::add(size_t higher, size_t lower)
 // returns flag if the combination is valid
 bool PartialOrder::createCombination(std::vector<size_t>& available, std::vector<size_t>& result)
 {
-	std::vector<size_t> combination(max+1);
-
-	// first number
+	// second number
 	for (auto i : available)
 	{
 		// check move validity
@@ -78,9 +76,26 @@ bool PartialOrder::createCombination(std::vector<size_t>& available, std::vector
 			}
 		}
 		// proceed with next position, mark this one unavailable
-		available.erase(std::find(avaiable.begin(),available.end(),i));
+		available.erase(std::find(available.begin(),available.end(),i));
 		result.pushback(i);
-		createCombination(available, result)
+		if(createCombination(available, result))
+			return true;
 	}
-	return true;
+	return false;  // not sure
+}
+
+bool PartialOrder::createCombinationRecursion(void)
+{
+	// first number
+	std::vector<size_t>& available(max+1);
+	std::iota(available.begin(), available.end(), 0);
+
+	for (size_t i = 1; i <= max; ++i)
+	{
+		available.erase(std::find(available.begin(),available.end(),i));
+		std::vector<size_t>& result {i};
+		if(createCombination(available, result))
+			return true;
+	}
+	return false;
 }

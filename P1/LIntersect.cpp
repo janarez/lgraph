@@ -114,8 +114,7 @@ bool LIntersectionGraph::tryToFind(void)
 	// try to find the l graph
 	deduceStopIntervals();
 	// do CUM with known data
-	doPartialOrder();
-	return false;
+	return doPartialOrder();
 }
 
 // the minimal value for the side coordinate
@@ -196,7 +195,7 @@ bool LIntersectionGraph::doPartialOrder(void)
 				return false;
 		}
 	}
-	return true;
+	return cum.createCombination();
 }
 
 void LIntersectionGraph::fillShapes(void)
