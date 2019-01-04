@@ -1,0 +1,4 @@
+zero vertices
+resulting combinations from cum
+
+does it quarantee correct solution?
