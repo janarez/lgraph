@@ -26,7 +26,7 @@ LIntersectionGraph::LIntersectionGraph(std::map<size_t, std::set<size_t>>& neigh
 	// 0 index unused
 	shapes.resize(neighbors.size()+1);
 	max = shapes.size()-1;
-	deduceDirections();
+	deduceDirections();  // known directions
 }
 
 // -1 is left, 1 is right, 0 is undecide
@@ -81,7 +81,7 @@ bool LIntersectionGraph::guessDirections(size_t counter)
 			// next vertex and check if solution was found
 			if (dirOK)
 			{
-				if (guessDirections(i))
+				if (guessDirections(i))		// this is to get out of the recursion, solution must be in shapes at this time
 					return true;
 			}
 			// then guess right
@@ -102,7 +102,7 @@ bool LIntersectionGraph::guessDirections(size_t counter)
 		}
 	}
 	// look for solution
-	return = tryToFind();
+	return tryToFind();
 }
 
 bool LIntersectionGraph::tryToFind(void)
@@ -195,17 +195,18 @@ bool LIntersectionGraph::doPartialOrder(void)
 				return false;
 		}
 	}
-	return cum.createCombination();
+	return true;
 }
 
+// shapes are indexed from zero
 void LIntersectionGraph::fillShapes(void)
 {
 	for (size_t i = 0; i < max; ++i)
 	{
 		shapes[i].up = i + 1;
-		shapes[i].bend = i; // actually result from cum
+		size_t vertexToBend = bends[i];
+		shapes[vertexToBend].bend = i;	// actually result from cum
 		shapes[i].side = stops[i + 1];
-
 	}
 	return;
 }
@@ -214,14 +215,17 @@ bool LIntersectionGraph::createLGraph(void)
 {
 	if (!guessDirections(0))
 	{
-		// wait for correct directions
+		// no solution
+		return false;
+
 	}
 	else
 	{
 		// solution exists, fill in lshapes
+		bends = cum.createOrdering();
 		fillShapes();
+		return true;
 	}
-	return false;
 }
 
 void LIntersectionGraph::printResult() const

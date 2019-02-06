@@ -59,6 +59,38 @@ bool PartialOrder::add(size_t higher, size_t lower)
 	return true;
 }
 
+// reconstruct ordering from the cum matrix
+// the highest one cannot have any 1's
+// second highest one has 1 only with the highest one etc...
+// equality -> random choice
+std::vector<size_t> PartialOrder::createOrdering(void)
+{
+	std::vector<size_t> ordering;
+	std::vector<size_t> sum;
+	for (size_t j = 0; j < max; ++j)
+	{
+		// get row sums
+		for (auto i : cum)
+		{
+			sum.push_back(std::count(cum[i].begin(), cum[i].end(), 1));
+		}
+		// register highest vertex
+		highest = std::min_element(sum.begin(), sum.end()) + 1;
+		ordering.push_back(highest);
+
+		// subtract column pertaining to highest element
+		for (size_t i = 1; i <= max; ++i)
+		{
+			cum[i][i] -= cum[highest][i];
+		}
+		// delete row pertaining to highest element
+		cum.erase(std::find(cum.begin(),cum.end(),i));
+	}
+	return ordering;
+}
+
+/* OBSOLETE CODE
+
 // available holds yet unused numbers, result the combination
 // returns flag if the combination is valid
 bool PartialOrder::createCombination(std::vector<size_t>& available, std::vector<size_t>& result)
@@ -87,15 +119,16 @@ bool PartialOrder::createCombination(std::vector<size_t>& available, std::vector
 bool PartialOrder::createCombinationRecursion(void)
 {
 	// first number
-	std::vector<size_t>& available(max+1);
-	std::iota(available.begin(), available.end(), 0);
+	std::vector<size_t> available(max+1);
+	std::iota(available.begin(), available.end(), 1);
 
 	for (size_t i = 1; i <= max; ++i)
 	{
 		available.erase(std::find(available.begin(),available.end(),i));
-		std::vector<size_t>& result {i};
+		std::vector<size_t> result {i};
 		if(createCombination(available, result))
 			return true;
 	}
 	return false;
 }
+*/

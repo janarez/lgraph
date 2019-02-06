@@ -19,6 +19,7 @@ class LIntersectionGraph
 	// -1 is left, 1 is right, 0 is undecide
 	std::vector<int> directions;
 	std::vector<int> stops;
+	std::vector<int> bends;
 
 	size_t max = 0;
 	LShape ls;

@@ -22,6 +22,7 @@ public:
 	bool createCombination(std::vector<size_t>& available,std::vector<size_t>& result);
 	bool createCombinationRecursion(void);
 
+	std::vector<size_t> createOrdering(void);
 
 	PartialOrder(size_t max)
 	{
