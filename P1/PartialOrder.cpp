@@ -34,7 +34,7 @@ bool PartialOrder::transitivity(size_t higher, size_t lower)
 		{
 			if (cum[lower][i] == -1)
 				return false;
-			else
+			else if (lower != i)
 			{
 				cum[lower][i] = 1;
 				cum[i][lower] = -1;
@@ -48,7 +48,7 @@ bool PartialOrder::transitivity(size_t higher, size_t lower)
 		{
 			if (cum[i][higher] == -1)
 				return false;
-			else
+			else if (higher != i)
 			{
 				cum[i][higher] = 1;
 				cum[higher][i] = -1;
@@ -69,8 +69,8 @@ bool PartialOrder::add(size_t higher, size_t lower)
 	else if (cum[higher][lower] == 0)
 	{
 		// insert all info
-		cum[higher][lower] = 1;
-		cum[lower][higher] = -1;
+		cum[higher][lower] = -1;
+		cum[lower][higher] = 1;
 		return transitivity(higher, lower);
 	}
 	return true;

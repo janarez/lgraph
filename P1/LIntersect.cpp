@@ -38,7 +38,7 @@ void LIntersectionGraph::deduceDirections(void)
 	// 0 index unused
 	directions.resize(max+1);
 	stops.resize(max + 1);
-	std::iota(stops.begin(), stops.end(), 1);
+	std::iota(stops.begin(), stops.end(), 0);
 
 	// 1 points to right, max point to left for sure
 	for (auto const& i : gl.neighbors)
@@ -89,13 +89,12 @@ bool LIntersectionGraph::guessDirections(size_t counter)
 			}
 			// then guess right
 			directions[i] = 1;
-			while (it != gl.neighbors[i].begin())
+			auto iter = gl.neighbors[i].begin();
+			while (*iter < i)
 			{
-				if (directions[*it] == -1)
+				if (directions[*iter] == -1)
 					dirOK = false;
-				else
-					directions[*it] = 1;
-				--it;
+				++iter;
 			}
 			if (dirOK)
 			{
@@ -131,9 +130,9 @@ void LIntersectionGraph::deduceStopIntervals(void)
 			// right must reach at least to left
 			if (directions[left] == -1 && directions[right] == -1)
 			{
-				stops[right] = left;
+				if (right > left)
+					stops[right] = left;
 				// reach to min vertex
-				break;
 			}
 			else if (directions[left] == 1 && directions[right] == 1)
 			{
@@ -214,9 +213,10 @@ void LIntersectionGraph::fillShapes(void)
 	for (size_t i = 0; i < max; ++i)
 	{
 		shapes[i].setUp(i + 1);
-		size_t vertexToBend = bends[i];
+		// the plus one is for leading vertical line in the graphical representation
+		size_t vertexToBend = bends[i]; 
 		// -1 since shapes are indexed from 0
-		shapes[vertexToBend-1].setBend(i);	// actually result from cum
+		shapes[vertexToBend-1].setBend(i + 1);	// actually result from cum
 		shapes[i].setSide(stops[i + 1]);
 	}
 	return;
