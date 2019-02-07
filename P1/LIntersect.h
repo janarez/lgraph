@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GraphLoader.h"
+#include "PartialOrder.h"
 
 #include <sstream>
 #include <vector>
@@ -19,15 +20,15 @@ class LIntersectionGraph
 	// -1 is left, 1 is right, 0 is undecide
 	std::vector<int> directions;
 	std::vector<int> stops;
-	std::vector<int> bends;
+	std::vector<size_t> bends;
 
 	size_t max = 0;
 	LShape ls;
 	GraphLoader gl;
-	PartialOrder cum(max);
+	PartialOrder cum;
 
 	void deduceDirections(void);
-	void guessDirections(size_t counter);
+	bool guessDirections(size_t counter);
 	bool tryToFind(void);
 	void deduceStopIntervals(void);
 	bool doPartialOrder(void);

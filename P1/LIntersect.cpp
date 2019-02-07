@@ -26,6 +26,9 @@ LIntersectionGraph::LIntersectionGraph(std::map<size_t, std::set<size_t>>& neigh
 	// 0 index unused
 	shapes.resize(neighbors.size()+1);
 	max = shapes.size()-1;
+
+	// initializes partial order class
+	cum.initializePartialOrder(max);
 	deduceDirections();  // known directions
 }
 
@@ -61,7 +64,7 @@ bool LIntersectionGraph::guessDirections(size_t counter)
 	// marks valid directions configuration
 	bool dirOK = true;
 	// do guessing for all nonset directions
-	for (size_t i = counter+1; i <= max; ++i)
+	for (size_t i = counter+1; i < max; ++i)
 	{
 		if (directions[i] == 0)
 		{
@@ -108,7 +111,7 @@ bool LIntersectionGraph::guessDirections(size_t counter)
 bool LIntersectionGraph::tryToFind(void)
 {
 	// all directions must be set
-	if (std::find(directions.begin(), directions.end(), 0) == directions.end())
+	if (std::find(directions.begin()+1, directions.end(), 0) != directions.end())
 		return false;
 
 	// try to find the l graph
@@ -150,18 +153,25 @@ bool LIntersectionGraph::doPartialOrder(void)
 	std::iota(allN.begin(), allN.end(), 1);
 
 	bool cumIsOK = true;
+	size_t right;
+	size_t left;
 
-	for (size_t left = 1; left <= max; ++left)
+	for (size_t leftT = 1; leftT <= max; ++leftT)
 	{
-		for (auto right : allN)
+		for (auto rightT : allN)
 		{
-			if (right == left)
+			if (rightT == leftT)
 				continue;
-			else if (right < left)
+			else if (rightT < leftT)
 			{
-				int temp = right;
-				right = left;
+				size_t temp = rightT;
+				right = leftT;
 				left = temp;
+			}
+			else
+			{
+				right = rightT;
+				left = leftT;
 			}
 			// edge exists
 			if (gl.neighbors[left].find(right) != gl.neighbors[left].end())
@@ -203,17 +213,18 @@ void LIntersectionGraph::fillShapes(void)
 {
 	for (size_t i = 0; i < max; ++i)
 	{
-		shapes[i].up = i + 1;
+		shapes[i].setUp(i + 1);
 		size_t vertexToBend = bends[i];
-		shapes[vertexToBend].bend = i;	// actually result from cum
-		shapes[i].side = stops[i + 1];
+		// -1 since shapes are indexed from 0
+		shapes[vertexToBend-1].setBend(i);	// actually result from cum
+		shapes[i].setSide(stops[i + 1]);
 	}
 	return;
 }
 
 bool LIntersectionGraph::createLGraph(void)
 {
-	if (!guessDirections(0))
+	if (!guessDirections(1))
 	{
 		// no solution
 		return false;

@@ -19,19 +19,9 @@ class PartialOrder
 public:
 	bool add(size_t higher, size_t lower);
 	bool transitivity(size_t higher, size_t lower);
-	bool createCombination(std::vector<size_t>& available,std::vector<size_t>& result);
-	bool createCombinationRecursion(void);
+	// bool createCombination(std::vector<size_t>& available,std::vector<size_t>& result);
+	// bool createCombinationRecursion(void);
 
 	std::vector<size_t> createOrdering(void);
-
-	PartialOrder(size_t max)
-	{
-		this->max = max;
-		// initialize the 2d [max]*[max] structure to zeroes
-		cum.resize(max + 1);
-		for (size_t i = 1; i <= max; ++i)
-		{
-			cum[i].resize(max + 1);
-		}
-	}
+	void initializePartialOrder(size_t max);
 };
