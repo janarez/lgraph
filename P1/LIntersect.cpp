@@ -123,17 +123,18 @@ bool LIntersectionGraph::tryToFind(void)
 // correct directions are passed
 void LIntersectionGraph::deduceStopIntervals(void)
 {
-	for (size_t left = 1; left <= max; ++left)
+	for (size_t right = 1; right <= max; ++right)
 	{
-		for (auto right : gl.neighbors[left])
+		for (auto left : gl.neighbors[right])
 		{
+			// symetrical
+			if (left > right)
+				break;
 			// right must reach at least to left
 			if (directions[left] == -1 && directions[right] == -1)
 			{
-				if (right > left)
-				{
-					stops[right] = left;
-				}
+				stops[right] = left;
+				break;
 				// reach to min vertex
 			}
 			else if (directions[left] == 1 && directions[right] == 1)
@@ -216,7 +217,7 @@ bool LIntersectionGraph::doPartialOrder(void)
 					// right is lower than left
 					cumIsOK = cum.add(left, right);
 				}
-				else if (stops[left] >= stops[right])
+				else if (stops[left] >= right)
 				{
 					// right is lower than left
 					cumIsOK = cum.add(left, right);
@@ -242,12 +243,12 @@ bool LIntersectionGraph::doPartialOrder(void)
 				}
 				else if (directions[left] == 1 && directions[right] == -1)
 				{
-					if (stops[left] >= stops[right])
+					if (stops[left] >= right)
 					{
 						// right is higher than left
 						cumIsOK = cum.add(right, left);
 					}
-					else if (stops[right] <= stops[left])
+					else if (stops[right] <= left)
 					{
 						// right is lower than left
 						cumIsOK = cum.add(left, right);
@@ -292,6 +293,12 @@ bool LIntersectionGraph::createLGraph(void)
 		return true;
 	}
 }
+
+int LIntersectionGraph::returnDirection(size_t i)
+{
+	return directions[i + 1];
+}
+
 
 void LIntersectionGraph::printResult() const
 {

@@ -25,7 +25,10 @@ System::Void P1::MyForm::pictureBox1_MouseClick(System::Object^  sender, System:
 		this->Controls->Add(button);
 		button->Location = System::Drawing::Point(e->X, e->Y);
 		button->BackColor = Color::Black;
-		button->Size = System::Drawing::Size(10, 10);
+		button->Size = System::Drawing::Size(20, 20);
+		button->ForeColor = Color::White;
+		button->Text = vertexcount.ToString();
+		button->Font = gcnew System::Drawing::Font("Microsoft Sans Serif",7);
 		button->BringToFront();
 		button->FlatStyle = FlatStyle::Flat;
 		button->FlatAppearance->BorderSize = 0;
@@ -143,6 +146,8 @@ System::Void P1::MyForm::button2_Click(System::Object^  sender, System::EventArg
 		int stepUp = heigth / (count + 1);
 		int stepAcross = width / (count + 1);
 		Pen^ linePen = gcnew Pen(Color::BlueViolet, 2);
+		System::Drawing::Font^ font = gcnew System::Drawing::Font("Microsoft Sans Serif", 15);
+		SolidBrush^ brush = gcnew SolidBrush(Color::Black);
 
 		for (size_t i = 0; i < count; ++i)
 		{
@@ -150,10 +155,11 @@ System::Void P1::MyForm::button2_Click(System::Object^  sender, System::EventArg
 			size_t _p2 = igraph.shapes[i].getBend();
 			size_t _p3 = igraph.shapes[i].getSide();
 
-			Point p0 = Point(_p1 * stepAcross, 0);
+			g->DrawString((i + 1).ToString(), font ,brush, _p1*stepAcross, 0.15*stepUp);
+			Point p0 = Point(_p1 * stepAcross, 0.5 * stepUp);
 			Point p1 = Point(_p1 * stepAcross, stepUp);
 			Point p2 = Point(_p1 * stepAcross, _p2 * stepUp);
-			Point p3 = Point(_p3 * stepAcross, _p2 * stepUp);
+			Point p3 = Point(_p3 * stepAcross + 0.5 * stepAcross * igraph.returnDirection(i), _p2 * stepUp);
 
 			(i % 2) ? linePen->Color = Color::BlueViolet : linePen->Color = Color::OrangeRed;
 
