@@ -36,7 +36,7 @@ LIntersectionGraph::LIntersectionGraph(std::map<size_t, std::set<size_t>>& neigh
 void LIntersectionGraph::deduceDirections(void)
 {
 	// 0 index unused
-	directions.resize(max+1);
+	directions.assign(max+1,0);
 	stops.resize(max + 1);
 	std::iota(stops.begin(), stops.end(), 0);
 
@@ -116,7 +116,7 @@ bool LIntersectionGraph::tryToFind(void)
 	// try to find the l graph
 	deduceStopIntervals();
 	// do CUM with known data
-	return guessStopIntervals(1,1);
+	return guessStopIntervals(1,0);
 }
 
 // the minimal value for the side coordinate
@@ -156,7 +156,7 @@ bool LIntersectionGraph::guessStopIntervals(size_t counter, size_t neighbor)
 			if (left > right)
 				break;
 			// already handled
-			if (left <= neighbor)
+			if (right == counter && left <= neighbor)
 				continue;
 			// this part is guessing
 			// necessarily: left is 1 right is -1

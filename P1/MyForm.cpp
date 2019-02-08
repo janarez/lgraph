@@ -25,7 +25,7 @@ System::Void P1::MyForm::pictureBox1_MouseClick(System::Object^  sender, System:
 		this->Controls->Add(button);
 		button->Location = System::Drawing::Point(e->X, e->Y);
 		button->BackColor = Color::Black;
-		button->Size = System::Drawing::Size(5, 5);
+		button->Size = System::Drawing::Size(10, 10);
 		button->BringToFront();
 		button->FlatStyle = FlatStyle::Flat;
 		button->FlatAppearance->BorderSize = 0;
