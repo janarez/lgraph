@@ -31,6 +31,8 @@ class LIntersectionGraph
 	bool guessDirections(size_t counter);
 	bool tryToFind(void);
 	void deduceStopIntervals(void);
+	bool guessStopIntervals(size_t counter, size_t neighbor);
+
 	bool doPartialOrder(void);
 	void fillShapes(void);
 

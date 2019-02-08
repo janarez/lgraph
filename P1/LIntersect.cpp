@@ -116,7 +116,7 @@ bool LIntersectionGraph::tryToFind(void)
 	// try to find the l graph
 	deduceStopIntervals();
 	// do CUM with known data
-	return doPartialOrder();
+	return guessStopIntervals(1,1);
 }
 
 // the minimal value for the side coordinate
@@ -131,7 +131,9 @@ void LIntersectionGraph::deduceStopIntervals(void)
 			if (directions[left] == -1 && directions[right] == -1)
 			{
 				if (right > left)
+				{
 					stops[right] = left;
+				}
 				// reach to min vertex
 			}
 			else if (directions[left] == 1 && directions[right] == 1)
@@ -144,6 +146,46 @@ void LIntersectionGraph::deduceStopIntervals(void)
 	return;
 }
 
+bool LIntersectionGraph::guessStopIntervals(size_t counter, size_t neighbor)
+{
+	for (size_t right = counter; right <= max; ++right)
+	{
+		for (auto left : gl.neighbors[right])
+		{
+			// symetrical
+			if (left > right)
+				break;
+			// already handled
+			if (left <= neighbor)
+				continue;
+			// this part is guessing
+			// necessarily: left is 1 right is -1
+
+			// good
+			if (stops[right] <= left || stops[left] >= right)
+				continue;
+			// guess: prolong left
+			else if (stops[left] >= left)
+			{
+				stops[left] = right;
+				if (guessStopIntervals(right, left))
+					return true;
+			}
+			// guess: prolong right
+			else if (stops[right] <= right)
+			{
+				stops[right] = left;
+				if (guessStopIntervals(right, left))
+					return true;
+			}
+			// error
+			else
+				return false;
+		}
+	}
+	return doPartialOrder();
+}
+
 // creates cum from so far known data
 // returns if cum exists
 bool LIntersectionGraph::doPartialOrder(void)
@@ -152,26 +194,15 @@ bool LIntersectionGraph::doPartialOrder(void)
 	std::iota(allN.begin(), allN.end(), 1);
 
 	bool cumIsOK = true;
-	size_t right;
-	size_t left;
-
-	for (size_t leftT = 1; leftT <= max; ++leftT)
+	
+	for (size_t right = 1; right <= max; ++right)
 	{
-		for (auto rightT : allN)
+		for (auto left : allN)
 		{
-			if (rightT == leftT)
-				continue;
-			else if (rightT < leftT)
-			{
-				size_t temp = rightT;
-				right = leftT;
-				left = temp;
-			}
-			else
-			{
-				right = rightT;
-				left = leftT;
-			}
+			// symmetrical
+			if (left >= right)
+				break;
+
 			// edge exists
 			if (gl.neighbors[left].find(right) != gl.neighbors[left].end())
 			{
@@ -184,6 +215,16 @@ bool LIntersectionGraph::doPartialOrder(void)
 				{
 					// right is lower than left
 					cumIsOK = cum.add(left, right);
+				}
+				else if (stops[left] >= stops[right])
+				{
+					// right is lower than left
+					cumIsOK = cum.add(left, right);
+				}
+				else
+				{
+					// right is higher than left
+					cumIsOK = cum.add(right, left);
 				}
 			}
 			// no edge
@@ -198,6 +239,19 @@ bool LIntersectionGraph::doPartialOrder(void)
 				{
 					// right is higher than left
 					cumIsOK = cum.add(right, left);
+				}
+				else if (directions[left] == 1 && directions[right] == -1)
+				{
+					if (stops[left] >= stops[right])
+					{
+						// right is higher than left
+						cumIsOK = cum.add(right, left);
+					}
+					else if (stops[right] <= stops[left])
+					{
+						// right is lower than left
+						cumIsOK = cum.add(left, right);
+					}
 				}
 			}
 			if (!cumIsOK)
