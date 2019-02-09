@@ -125,6 +125,8 @@ System::Void P1::MyForm::button_MouseClick(System::Object^  sender, System::Wind
 // also shows result in picturebox2
 System::Void P1::MyForm::button2_Click(System::Object^  sender, System::EventArgs^  e)
 {
+	// set vertex count in graphloader
+	gl.setVertexCount(vertexcount);
 	// do magic :)
 	LIntersectionGraph igraph(gl.removeZeroDegreeVertices());
 	bool exists = igraph.createLGraph();
@@ -155,7 +157,7 @@ System::Void P1::MyForm::button2_Click(System::Object^  sender, System::EventArg
 			size_t _p2 = igraph.shapes[i].getBend();
 			size_t _p3 = igraph.shapes[i].getSide();
 
-			g->DrawString((i + 1).ToString(), font ,brush, _p1*stepAcross, 0.15*stepUp);
+			g->DrawString(gl.returtVertexID(i+1).ToString(), font ,brush, _p1*stepAcross, 0.15*stepUp);
 			Point p0 = Point(_p1 * stepAcross, 0.5 * stepUp);
 			Point p1 = Point(_p1 * stepAcross, stepUp);
 			Point p2 = Point(_p1 * stepAcross, _p2 * stepUp);

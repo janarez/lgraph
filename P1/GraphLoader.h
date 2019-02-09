@@ -13,6 +13,11 @@ class GraphLoader
 {
 	std::vector<size_t> zerodegree;
 	std::map<size_t, std::set<size_t>> fixed_neighbors;
+	std::vector<size_t> vertexID;
+
+	size_t vertexCount;
+
+	void setVertexID(std::map<size_t, size_t>& rename);
 
 public:
 	std::map<size_t, std::set<size_t>> neighbors;
@@ -28,6 +33,9 @@ public:
 	void deleteEdge(System::String^ a, System::String^ b);
 
 	std::map<size_t, std::set<size_t>>& removeZeroDegreeVertices();
+
+	void setVertexCount(size_t n);
+	size_t returtVertexID(size_t n);
 };
 
 class LShape

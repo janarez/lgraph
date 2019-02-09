@@ -42,17 +42,37 @@ std::map<size_t, std::set<size_t>>& GraphLoader::removeZeroDegreeVertices()
 
 	for (auto const& i : rename)
 	{
+		// rename the vertex in neighbors
 		fixed_neighbors.insert(std::make_pair(rename[i.first], fixed_neighbors[i.first]));
 		fixed_neighbors.erase(i.first);
+		// rename the vertex in all edges
 		for (auto& j : fixed_neighbors[rename[i.first]])
 		{
 			fixed_neighbors[j].erase(i.first);
 			fixed_neighbors[j].insert(rename[i.first]);
-
 		}
 	}
+	setVertexID(rename);
 	return fixed_neighbors;
 }
+
+void GraphLoader::setVertexCount(size_t n)
+{
+	vertexCount = n;
+	return;
+}
+
+void GraphLoader::setVertexID(std::map<size_t, size_t>& rename)
+{
+	vertexID.resize(vertexCount + 1);
+	std::iota(vertexID.begin(), vertexID.end(), 0);
+	
+	for (auto const& i : rename)
+	{
+		vertexID[i.second] = i.first;
+	}
+}
+
 
 void GraphLoader::registerVertex(size_t n)
 {
@@ -163,6 +183,11 @@ void GraphLoader::load(std::istream& is)
 	}
 }
 
+size_t GraphLoader::returtVertexID(size_t n)
+{
+	return vertexID[n];
+}
+
 bool LShape::doIntersect(LShape& a, LShape& b) const
 {
 	if ((b.bend <= a.bend) && ((a.up <= b.side && a.up >= b.up) || (a.up >= b.side && a.up <= b.up)))
@@ -172,3 +197,5 @@ bool LShape::doIntersect(LShape& a, LShape& b) const
 	else
 		return false;
 }
+
+
