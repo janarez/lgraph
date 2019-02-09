@@ -148,7 +148,8 @@ System::Void P1::MyForm::button2_Click(System::Object^  sender, System::EventArg
 		int stepUp = heigth / (count + 1);
 		int stepAcross = width / (count + 1);
 		Pen^ linePen = gcnew Pen(Color::BlueViolet, 2);
-		System::Drawing::Font^ font = gcnew System::Drawing::Font("Microsoft Sans Serif", 15);
+		// might interfere if too many vertices are used (35 is still ok, then the form should be enlarged rather than text size)
+		System::Drawing::Font^ font = gcnew System::Drawing::Font("Microsoft Sans Serif", 10);
 		SolidBrush^ brush = gcnew SolidBrush(Color::Black);
 
 		for (size_t i = 0; i < count; ++i)
@@ -157,13 +158,16 @@ System::Void P1::MyForm::button2_Click(System::Object^  sender, System::EventArg
 			size_t _p2 = igraph.shapes[i].getBend();
 			size_t _p3 = igraph.shapes[i].getSide();
 
-			g->DrawString(gl.returtVertexID(i+1).ToString(), font ,brush, _p1*stepAcross, 0.15*stepUp);
-			Point p0 = Point(_p1 * stepAcross, 0.5 * stepUp);
-			Point p1 = Point(_p1 * stepAcross, stepUp);
-			Point p2 = Point(_p1 * stepAcross, _p2 * stepUp);
-			Point p3 = Point(_p3 * stepAcross + 0.5 * stepAcross * igraph.returnDirection(i), _p2 * stepUp);
+			// - 8 so that indeces start above L shape
+			g->DrawString(gl.returtVertexID(i+1).ToString(), font ,brush, _p1*stepAcross-7, 2);
 
-			(i % 2) ? linePen->Color = Color::BlueViolet : linePen->Color = Color::OrangeRed;
+			// 17 is pixel offset for text with indices
+			Point p0 = Point(_p1 * stepAcross, 17);
+			Point p1 = Point(_p1 * stepAcross, 17 + 0.5*stepUp);
+			Point p2 = Point(_p1 * stepAcross, 17 + _p2 * stepUp);
+			Point p3 = Point(_p3 * stepAcross + 0.5 * stepAcross * igraph.returnDirection(i), 17 + _p2 * stepUp);
+
+			(i % 2) ? linePen->Color = Color::Black : linePen->Color = Color::Red;
 
 			array<System::Drawing::Point>^ points = { p0,p1,p2,p3 };
 			g->DrawLines(linePen, points);

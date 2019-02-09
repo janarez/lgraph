@@ -44,6 +44,8 @@ namespace P1 {
 	private: System::Windows::Forms::RadioButton^  radioButton4;
 	private: System::Windows::Forms::PictureBox^  pictureBox2;
 	private: System::Windows::Forms::Button^  button3;
+	private: System::Windows::Forms::Label^  label1;
+	private: System::Windows::Forms::Label^  label2;
 
 	private:
 		/// <summary>
@@ -67,6 +69,8 @@ namespace P1 {
 			this->radioButton4 = (gcnew System::Windows::Forms::RadioButton());
 			this->pictureBox2 = (gcnew System::Windows::Forms::PictureBox());
 			this->button3 = (gcnew System::Windows::Forms::Button());
+			this->label1 = (gcnew System::Windows::Forms::Label());
+			this->label2 = (gcnew System::Windows::Forms::Label());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox2))->BeginInit();
 			this->SuspendLayout();
@@ -74,7 +78,7 @@ namespace P1 {
 			// radioButton1
 			// 
 			this->radioButton1->AutoSize = true;
-			this->radioButton1->Location = System::Drawing::Point(567, 24);
+			this->radioButton1->Location = System::Drawing::Point(516, 34);
 			this->radioButton1->Name = L"radioButton1";
 			this->radioButton1->Size = System::Drawing::Size(77, 17);
 			this->radioButton1->TabIndex = 1;
@@ -86,7 +90,7 @@ namespace P1 {
 			// radioButton2
 			// 
 			this->radioButton2->AutoSize = true;
-			this->radioButton2->Location = System::Drawing::Point(567, 47);
+			this->radioButton2->Location = System::Drawing::Point(516, 57);
 			this->radioButton2->Name = L"radioButton2";
 			this->radioButton2->Size = System::Drawing::Size(72, 17);
 			this->radioButton2->TabIndex = 2;
@@ -99,7 +103,7 @@ namespace P1 {
 			this->pictureBox1->BackColor = System::Drawing::Color::White;
 			this->pictureBox1->Location = System::Drawing::Point(3, 4);
 			this->pictureBox1->Name = L"pictureBox1";
-			this->pictureBox1->Size = System::Drawing::Size(546, 345);
+			this->pictureBox1->Size = System::Drawing::Size(498, 345);
 			this->pictureBox1->TabIndex = 3;
 			this->pictureBox1->TabStop = false;
 			this->pictureBox1->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &MyForm::pictureBox1_Paint);
@@ -107,12 +111,13 @@ namespace P1 {
 			// 
 			// button1
 			// 
-			this->button1->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(255)),
-				static_cast<System::Int32>(static_cast<System::Byte>(128)));
-			this->button1->FlatAppearance->BorderColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)),
-				static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(128)));
+			this->button1->BackColor = System::Drawing::Color::Gray;
+			this->button1->FlatAppearance->BorderColor = System::Drawing::Color::Gray;
 			this->button1->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-			this->button1->Location = System::Drawing::Point(581, 87);
+			this->button1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->button1->ForeColor = System::Drawing::Color::White;
+			this->button1->Location = System::Drawing::Point(531, 105);
 			this->button1->Name = L"button1";
 			this->button1->Size = System::Drawing::Size(131, 45);
 			this->button1->TabIndex = 4;
@@ -122,12 +127,12 @@ namespace P1 {
 			// 
 			// button2
 			// 
-			this->button2->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(255)),
-				static_cast<System::Int32>(static_cast<System::Byte>(128)));
-			this->button2->FlatAppearance->BorderColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)),
-				static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(128)));
+			this->button2->BackColor = System::Drawing::Color::Gray;
+			this->button2->FlatAppearance->BorderColor = System::Drawing::Color::Gray;
 			this->button2->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-			this->button2->Location = System::Drawing::Point(581, 148);
+			this->button2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9, System::Drawing::FontStyle::Bold));
+			this->button2->ForeColor = System::Drawing::Color::White;
+			this->button2->Location = System::Drawing::Point(531, 169);
 			this->button2->Name = L"button2";
 			this->button2->Size = System::Drawing::Size(131, 49);
 			this->button2->TabIndex = 5;
@@ -138,7 +143,7 @@ namespace P1 {
 			// radioButton3
 			// 
 			this->radioButton3->AutoSize = true;
-			this->radioButton3->Location = System::Drawing::Point(650, 24);
+			this->radioButton3->Location = System::Drawing::Point(599, 34);
 			this->radioButton3->Name = L"radioButton3";
 			this->radioButton3->Size = System::Drawing::Size(89, 17);
 			this->radioButton3->TabIndex = 6;
@@ -149,7 +154,7 @@ namespace P1 {
 			// radioButton4
 			// 
 			this->radioButton4->AutoSize = true;
-			this->radioButton4->Location = System::Drawing::Point(650, 47);
+			this->radioButton4->Location = System::Drawing::Point(599, 57);
 			this->radioButton4->Name = L"radioButton4";
 			this->radioButton4->Size = System::Drawing::Size(84, 17);
 			this->radioButton4->TabIndex = 7;
@@ -160,20 +165,20 @@ namespace P1 {
 			// pictureBox2
 			// 
 			this->pictureBox2->BackColor = System::Drawing::Color::White;
-			this->pictureBox2->Location = System::Drawing::Point(740, 4);
+			this->pictureBox2->Location = System::Drawing::Point(694, 4);
 			this->pictureBox2->Name = L"pictureBox2";
-			this->pictureBox2->Size = System::Drawing::Size(418, 345);
+			this->pictureBox2->Size = System::Drawing::Size(473, 345);
 			this->pictureBox2->TabIndex = 8;
 			this->pictureBox2->TabStop = false;
 			// 
 			// button3
 			// 
-			this->button3->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(255)),
-				static_cast<System::Int32>(static_cast<System::Byte>(128)));
-			this->button3->FlatAppearance->BorderColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)),
-				static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(128)));
+			this->button3->BackColor = System::Drawing::Color::Gray;
+			this->button3->FlatAppearance->BorderColor = System::Drawing::Color::Gray;
 			this->button3->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-			this->button3->Location = System::Drawing::Point(581, 212);
+			this->button3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9, System::Drawing::FontStyle::Bold));
+			this->button3->ForeColor = System::Drawing::Color::White;
+			this->button3->Location = System::Drawing::Point(531, 237);
 			this->button3->Name = L"button3";
 			this->button3->Size = System::Drawing::Size(131, 50);
 			this->button3->TabIndex = 9;
@@ -181,13 +186,36 @@ namespace P1 {
 			this->button3->UseVisualStyleBackColor = false;
 			this->button3->Click += gcnew System::EventHandler(this, &MyForm::button3_Click);
 			// 
+			// label1
+			// 
+			this->label1->AutoSize = true;
+			this->label1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label1->Location = System::Drawing::Point(144, 361);
+			this->label1->Name = L"label1";
+			this->label1->Size = System::Drawing::Size(186, 20);
+			this->label1->TabIndex = 10;
+			this->label1->Text = L"Draw your graph here.";
+			// 
+			// label2
+			// 
+			this->label2->AutoSize = true;
+			this->label2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label2->Location = System::Drawing::Point(751, 361);
+			this->label2->Name = L"label2";
+			this->label2->Size = System::Drawing::Size(384, 20);
+			this->label2->TabIndex = 11;
+			this->label2->Text = L"Resulting L graph (0 degree vertices ommited).";
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(255)), static_cast<System::Int32>(static_cast<System::Byte>(255)),
-				static_cast<System::Int32>(static_cast<System::Byte>(192)));
+			this->BackColor = System::Drawing::Color::Silver;
 			this->ClientSize = System::Drawing::Size(1170, 578);
+			this->Controls->Add(this->label2);
+			this->Controls->Add(this->label1);
 			this->Controls->Add(this->button3);
 			this->Controls->Add(this->pictureBox2);
 			this->Controls->Add(this->radioButton4);
@@ -197,7 +225,10 @@ namespace P1 {
 			this->Controls->Add(this->pictureBox1);
 			this->Controls->Add(this->radioButton2);
 			this->Controls->Add(this->radioButton1);
+			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedDialog;
+			this->MaximizeBox = false;
 			this->Name = L"MyForm";
+			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
 			this->Text = L"L Intersection Graph";
 			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
