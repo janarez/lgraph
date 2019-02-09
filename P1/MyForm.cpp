@@ -190,8 +190,21 @@ System::Void P1::MyForm::button1_Click(System::Object^  sender, System::EventArg
 	OpenFileDialog^ ofd = gcnew OpenFileDialog;
 	ofd->ShowDialog();
 	String^ file = ofd->FileName;
-	gl.neighbors.clear();
+	// clear all
+	button3_Click(sender,e);
 	gl.loading(file);
+
+	// display that graph file has been loaded
+	String^ string = "Graph file is loaded";
+	System::Drawing::Font^ font = gcnew System::Drawing::Font("Arial", 16);
+	SolidBrush^ brush = gcnew SolidBrush(Color::Black);
+	PointF point = PointF(10, 10);
+	Graphics^ g;
+	g = pictureBox1->CreateGraphics();
+	g->DrawString(string, font, brush, point);
+
+	// must set vertexcount here, so that setVertexIDs works
+	vertexcount = gl.neighbors.size();
 }
 
 // clear all that was done so far
