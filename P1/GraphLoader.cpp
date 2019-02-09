@@ -109,6 +109,9 @@ void GraphLoader::deleteVertex(System::String^ n)
 	{
 		throw std::exception("Unexpected Error");
 	}
+	// delete vertex from edges
+	for (size_t u : neighbors[vertex])
+		neighbors[u].erase(vertex);
 	neighbors.erase(vertex);
 }
 
