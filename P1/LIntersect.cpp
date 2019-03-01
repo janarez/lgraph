@@ -78,8 +78,8 @@ bool LIntersectionGraph::guessDirections(size_t counter)
 			{
 				if (directions[*it] == 1)
 					dirOK = false;
-				else
-					directions[*it] = -1;
+				//else
+					//directions[*it] = -1;
 				++it;
 			}
 			// next vertex and check if solution was found
@@ -101,6 +101,11 @@ bool LIntersectionGraph::guessDirections(size_t counter)
 			{
 				if (guessDirections(i))
 					return true;
+			}
+			else
+			{
+				directions[i] = 0;
+				return false;
 			}
 		}
 	}

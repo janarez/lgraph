@@ -56,6 +56,7 @@ std::map<size_t, std::set<size_t>>& GraphLoader::removeZeroDegreeVertices()
 	size_per = fixed_neighbors.size();
 	permutation.resize(size_per+1);
 	std::iota(permutation.begin(), permutation.end(), 0);
+
 	return fixed_neighbors;
 }
 
@@ -210,8 +211,12 @@ void GraphLoader::resetVertexID(void)
 std::map<size_t, std::set<size_t>>& GraphLoader::permuteNeighbors()
 {
 	// updatePermutation(); // thro exception if not possible
-	std::next_permutation(permutation.begin() + 1, permutation.end());
-	
+	bool next = std::next_permutation(permutation.begin() + 1, permutation.end());
+	//permutation = { 0, 1, 3, 4, 10, 8, 2, 5, 7, 6, 9 };
+
+	if (!next)
+		throw std::exception("Tried all permutations...");
+
 	new_neighbors.clear();
 	std::set<size_t> temp;
 
@@ -230,7 +235,6 @@ std::map<size_t, std::set<size_t>>& GraphLoader::permuteNeighbors()
 
 	resetVertexID();
 
-	// throw std::exception("...");
 	return new_neighbors;
 }
 
