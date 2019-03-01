@@ -14,13 +14,20 @@ class GraphLoader
 	std::vector<size_t> zerodegree;
 	std::map<size_t, std::set<size_t>> fixed_neighbors;
 	std::vector<size_t> vertexID;
+	std::vector<size_t> fixed_vertexID;
+
+
+	std::vector<size_t> permutation;
+	size_t size_per;
 
 	size_t vertexCount;
-
+	
+	void resetVertexID(void);
 	void setVertexID(std::map<size_t, size_t>& rename);
 
 public:
 	std::map<size_t, std::set<size_t>> neighbors;
+	std::map<size_t, std::set<size_t>> new_neighbors;
 
 	void load(std::istream& is);
 	void loading(System::String^ file);
@@ -36,6 +43,8 @@ public:
 
 	void setVertexCount(size_t n);
 	size_t returtVertexID(size_t n);
+
+	std::map<size_t, std::set<size_t>>& permuteNeighbors();
 };
 
 class LShape

@@ -16,7 +16,7 @@
 // each L is is given by three coordinates
 
 class LIntersectionGraph
-{
+{	
 	// -1 is left, 1 is right, 0 is undecide
 	std::vector<int> directions;
 	std::vector<int> stops;
@@ -24,7 +24,6 @@ class LIntersectionGraph
 
 	size_t max = 0;
 	LShape ls;
-	GraphLoader gl;
 	PartialOrder cum;
 
 	void deduceDirections(void);
@@ -37,6 +36,7 @@ class LIntersectionGraph
 	void fillShapes(void);
 
 public:
+	std::map<size_t, std::set<size_t>> neighbors;
 
 	std::vector<LShape> shapes;
 

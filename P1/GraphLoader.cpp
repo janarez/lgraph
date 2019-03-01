@@ -53,6 +53,9 @@ std::map<size_t, std::set<size_t>>& GraphLoader::removeZeroDegreeVertices()
 		}
 	}
 	setVertexID(rename);
+	size_per = fixed_neighbors.size();
+	permutation.resize(size_per+1);
+	std::iota(permutation.begin(), permutation.end(), 0);
 	return fixed_neighbors;
 }
 
@@ -71,6 +74,8 @@ void GraphLoader::setVertexID(std::map<size_t, size_t>& rename)
 	{
 		vertexID[i.second] = i.first;
 	}
+
+	fixed_vertexID = vertexID;
 }
 
 
@@ -190,6 +195,45 @@ size_t GraphLoader::returtVertexID(size_t n)
 {
 	return vertexID[n];
 }
+
+void GraphLoader::resetVertexID(void)
+{
+	std::vector<size_t> temp(size_per+1);
+	for (size_t i = 1; i <= size_per; ++i)
+	{
+		temp[permutation[i]] = fixed_vertexID[i];
+	}
+	vertexID = temp;
+	return;
+}
+
+std::map<size_t, std::set<size_t>>& GraphLoader::permuteNeighbors()
+{
+	// updatePermutation(); // thro exception if not possible
+	std::next_permutation(permutation.begin() + 1, permutation.end());
+	
+	new_neighbors.clear();
+	std::set<size_t> temp;
+
+	for (auto const& i : fixed_neighbors)
+	{
+		// rename the vertex in neighbors
+		new_neighbors.insert(std::make_pair(permutation[i.first], fixed_neighbors[i.first]));
+		// rename all edges
+		for (size_t edge : new_neighbors[permutation[i.first]])
+		{
+			temp.insert(permutation[edge]);
+		}
+		new_neighbors[permutation[i.first]] = temp;
+		temp.clear();
+	}
+
+	resetVertexID();
+
+	// throw std::exception("...");
+	return new_neighbors;
+}
+
 
 bool LShape::doIntersect(LShape& a, LShape& b) const
 {

@@ -23,7 +23,13 @@ void PartialOrder::initializePartialOrder(size_t max)
 	return;
 }
 
-
+void PartialOrder::zeroMatrix(void)
+{
+	for (size_t i = 1; i <= max; ++i)
+	{
+		std::fill(cum[i].begin() + 1, cum[i].end(), 0);
+	}
+}
 
 bool PartialOrder::transitivity(size_t higher, size_t lower)
 {

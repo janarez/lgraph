@@ -128,8 +128,29 @@ System::Void P1::MyForm::button2_Click(System::Object^  sender, System::EventArg
 	// set vertex count in graphloader
 	gl.setVertexCount(vertexcount);
 	// do magic :)
+	bool exists = false;
 	LIntersectionGraph igraph(gl.removeZeroDegreeVertices());
-	bool exists = igraph.createLGraph();
+	bool first = true;
+	do
+	{
+		if (first)
+		{
+			exists = igraph.createLGraph();
+			first = false;
+		}
+		else
+		{
+			try
+			{
+				igraph.neighbors = gl.permuteNeighbors();
+			}
+			catch (const std::exception&)
+			{
+				break;
+			}
+			exists = igraph.createLGraph();
+		}
+	} while (!exists);
 	
 	Graphics^ g;
 	g = pictureBox2->CreateGraphics();

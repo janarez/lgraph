@@ -19,17 +19,16 @@
 // constructor
 // takes in graph in the form of map of vertices to its neighbours
 
-LIntersectionGraph::LIntersectionGraph(std::map<size_t, std::set<size_t>>& neighbors)
+LIntersectionGraph::LIntersectionGraph(std::map<size_t, std::set<size_t>>& n)
 {
 	// initializes all LShapes to zeroes;
-	gl.neighbors = neighbors;
+	neighbors = n;
+	max = neighbors.size();
 	// 0 index unused
-	shapes.resize(neighbors.size()+1);
-	max = shapes.size()-1;
+	shapes.resize(max+1);
 
 	// initializes partial order class
 	cum.initializePartialOrder(max);
-	deduceDirections();  // known directions
 }
 
 // -1 is left, 1 is right, 0 is undecide
@@ -39,9 +38,11 @@ void LIntersectionGraph::deduceDirections(void)
 	directions.assign(max+1,0);
 	stops.resize(max + 1);
 	std::iota(stops.begin(), stops.end(), 0);
+	
+	cum.zeroMatrix();
 
 	// 1 points to right, max point to left for sure
-	for (auto const& i : gl.neighbors)
+	for (auto const& i : neighbors)
 	{
 		auto it = i.second.upper_bound(i.first);
 		if (i.second.begin() == it)
@@ -69,11 +70,11 @@ bool LIntersectionGraph::guessDirections(size_t counter)
 		if (directions[i] == 0)
 		{
 			// all preceeding vertices are correct and so only higher vertices are checked
-			auto it = gl.neighbors[i].upper_bound(i);
+			auto it = neighbors[i].upper_bound(i);
 
 			// first guess left
 			directions[i] = -1;
-			while (it != gl.neighbors[i].end())
+			while (it != neighbors[i].end())
 			{
 				if (directions[*it] == 1)
 					dirOK = false;
@@ -89,7 +90,7 @@ bool LIntersectionGraph::guessDirections(size_t counter)
 			}
 			// then guess right
 			directions[i] = 1;
-			auto iter = gl.neighbors[i].begin();
+			auto iter = neighbors[i].begin();
 			while (*iter < i)
 			{
 				if (directions[*iter] == -1)
@@ -125,7 +126,7 @@ void LIntersectionGraph::deduceStopIntervals(void)
 {
 	for (size_t right = 1; right <= max; ++right)
 	{
-		for (auto left : gl.neighbors[right])
+		for (auto left : neighbors[right])
 		{
 			// symetrical
 			if (left > right)
@@ -151,7 +152,7 @@ bool LIntersectionGraph::guessStopIntervals(size_t counter, size_t neighbor)
 {
 	for (size_t right = counter; right <= max; ++right)
 	{
-		for (auto left : gl.neighbors[right])
+		for (auto left : neighbors[right])
 		{
 			// symetrical
 			if (left > right)
@@ -205,7 +206,7 @@ bool LIntersectionGraph::doPartialOrder(void)
 				break;
 
 			// edge exists
-			if (gl.neighbors[left].find(right) != gl.neighbors[left].end())
+			if (neighbors[left].find(right) != neighbors[left].end())
 			{
 				if (directions[left] == -1 && directions[right] == -1)
 				{
@@ -279,6 +280,8 @@ void LIntersectionGraph::fillShapes(void)
 
 bool LIntersectionGraph::createLGraph(void)
 {
+	deduceDirections();  // known directions
+
 	if (!guessDirections(1))
 	{
 		// no solution

@@ -24,4 +24,6 @@ public:
 
 	std::vector<size_t> createOrdering(void);
 	void initializePartialOrder(size_t max);
+
+	void zeroMatrix(void);
 };
