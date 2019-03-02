@@ -212,7 +212,7 @@ std::map<size_t, std::set<size_t>>& GraphLoader::permuteNeighbors()
 {
 	// updatePermutation(); // thro exception if not possible
 	bool next = std::next_permutation(permutation.begin() + 1, permutation.end());
-	//permutation = { 0, 1, 3, 4, 10, 8, 2, 5, 7, 6, 9 };
+	//permutation = { 0, 2,3,7,9,1,6,5,10,8,4 };
 
 	if (!next)
 		throw std::exception("Tried all permutations...");

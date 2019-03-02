@@ -129,6 +129,7 @@ bool LIntersectionGraph::tryToFind(void)
 // correct directions are passed
 void LIntersectionGraph::deduceStopIntervals(void)
 {
+	std::iota(stops.begin(), stops.end(), 0);
 	for (size_t right = 1; right <= max; ++right)
 	{
 		for (auto left : neighbors[right])
@@ -155,6 +156,7 @@ void LIntersectionGraph::deduceStopIntervals(void)
 
 bool LIntersectionGraph::guessStopIntervals(size_t counter, size_t neighbor)
 {
+	std::vector<size_t> prev(max+1);
 	for (size_t right = counter; right <= max; ++right)
 	{
 		for (auto left : neighbors[right])
@@ -172,22 +174,22 @@ bool LIntersectionGraph::guessStopIntervals(size_t counter, size_t neighbor)
 			if (stops[right] <= left || stops[left] >= right)
 				continue;
 			// guess: prolong left
-			else if (stops[left] >= left)
-			{
-				stops[left] = right;
-				if (guessStopIntervals(right, left))
-					return true;
-			}
+			if (prev[left] == 0)
+				prev[left] = stops[left];
+			stops[left] = right;
+			if (guessStopIntervals(right, left))
+				return true;
+			
 			// guess: prolong right
-			else if (stops[right] <= right)
-			{
-				stops[right] = left;
-				if (guessStopIntervals(right, left))
-					return true;
-			}
+			stops[left] = prev[left];
+			if (prev[right] == 0)
+				prev[right] = stops[right];
+			stops[right] = left;
+			if (guessStopIntervals(right, left))
+				return true;			
 			// error
-			else
-				return false;
+			stops[right] = prev[right];
+			return false;
 		}
 	}
 	return doPartialOrder();
@@ -201,7 +203,8 @@ bool LIntersectionGraph::doPartialOrder(void)
 	std::iota(allN.begin(), allN.end(), 1);
 
 	bool cumIsOK = true;
-	
+	cum.zeroMatrix();
+
 	for (size_t right = 1; right <= max; ++right)
 	{
 		for (auto left : allN)
@@ -254,7 +257,7 @@ bool LIntersectionGraph::doPartialOrder(void)
 						// right is higher than left
 						cumIsOK = cum.add(right, left);
 					}
-					else if (stops[right] <= left)
+					if (cumIsOK && stops[right] <= left)
 					{
 						// right is lower than left
 						cumIsOK = cum.add(left, right);
