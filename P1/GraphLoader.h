@@ -25,9 +25,15 @@ class GraphLoader
 	void resetVertexID(void);
 	void setVertexID(std::map<size_t, size_t>& rename);
 
+	// list of vertices in each component
+	std::vector<size_t> comp;
+	bool addNeighbors(size_t vertex);
+
 public:
 	std::map<size_t, std::set<size_t>> neighbors;
 	std::map<size_t, std::set<size_t>> new_neighbors;
+
+	std::vector<std::vector<size_t>> components;
 
 	void load(std::istream& is);
 	void loading(System::String^ file);
@@ -43,6 +49,8 @@ public:
 
 	void setVertexCount(size_t n);
 	size_t returtVertexID(size_t n);
+
+	void updatePermutation(void);
 
 	std::map<size_t, std::set<size_t>>& permuteNeighbors();
 };

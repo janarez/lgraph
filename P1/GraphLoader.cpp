@@ -13,6 +13,7 @@
 #include<iostream>
 #include<istream>
 #include<fstream>
+#include <iterator>
 
 // for converting from System::String^ to std::string
 #include <msclr\marshal_cppstd.h>
@@ -101,6 +102,42 @@ void GraphLoader::registerEdge(System::String^ a, System::String^ b)
 	}
 	neighbors[v1].insert(v2);
 	neighbors[v2].insert(v1);
+
+	// put vertices in correct component
+	int c_v1 = -1;
+	int c_v2 = -1;
+	size_t counter = 0;
+
+	for (auto& i : components)
+	{
+		if (c_v1 == -1)
+		{
+			if (std::find(i.begin(), i.end(), v1) != i.end())
+				c_v1 = counter;
+		}
+		if (c_v2 == -1)
+		{
+			if (std::find(i.begin(), i.end(), v2) != i.end())
+				c_v2 = counter;
+		}
+		++counter;
+	}
+
+	// update components
+	if (c_v1 == -1 && c_v2 == -1)
+	{
+		std::vector<size_t> newc{ v1, v2 };
+		components.push_back(newc);
+	}
+	else if (c_v1 == -1)
+		components[c_v2].push_back(v1);
+	else if (c_v2 == -1)
+		components[c_v1].push_back(v2);
+	else if (c_v1 != c_v2)
+	{
+		components[c_v1].insert(components[c_v1].end(), components[c_v2].begin(), components[c_v2].end());
+		components.erase(components.begin() + c_v2);
+	}
 	return;
 }
 
@@ -121,6 +158,24 @@ void GraphLoader::deleteVertex(System::String^ n)
 	neighbors.erase(vertex);
 }
 
+bool GraphLoader::addNeighbors(size_t vertex)
+{
+	if (comp.empty())
+		return false;
+	
+	for (auto u : neighbors[vertex])
+	{
+		auto pos = std::find(comp.begin(), comp.end(), u);
+		if (pos != comp.end())
+		{
+			comp.erase(pos);
+			if (!addNeighbors(u))
+				return false;
+		}		
+	}
+	return true;
+}
+
 void GraphLoader::deleteEdge(System::String^ a, System::String^ b)
 {
 	size_t v1, v2;
@@ -136,6 +191,31 @@ void GraphLoader::deleteEdge(System::String^ a, System::String^ b)
 	}
 	neighbors[v1].erase(v2);
 	neighbors[v2].erase(v1);
+
+	// find correct component
+	size_t counter = 0;
+	for (auto& i : components)
+	{
+		if (std::find(i.begin(), i.end(), v1) != i.end())
+			break;
+		++counter;
+	}
+	// new component? ... (v1, v2) was bridge
+	comp = components[counter];
+	bool decompose = addNeighbors(v1);
+	if (decompose)
+	{
+		std::vector<size_t> new_comp;
+		// set_differnce needs sorted vectors
+		std::sort(components[counter].begin(), components[counter].end());
+		std::sort(comp.begin(), comp.end());
+		std::set_difference(components[counter].begin(), components[counter].end(), comp.begin(), comp.end(),
+			std::inserter(new_comp, new_comp.begin()));
+		components[counter] = comp;
+		components.push_back(new_comp);
+	}
+	// else still one component
+
 	return;
 }
 
@@ -206,6 +286,12 @@ void GraphLoader::resetVertexID(void)
 	}
 	vertexID = temp;
 	return;
+}
+
+
+void GraphLoader::updatePermutation(void)
+{
+
 }
 
 std::map<size_t, std::set<size_t>>& GraphLoader::permuteNeighbors()

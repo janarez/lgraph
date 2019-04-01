@@ -234,6 +234,7 @@ System::Void P1::MyForm::button3_Click(System::Object^  sender, System::EventArg
 {
 	// erase loaded graph
 	gl.neighbors.clear();
+	gl.components.clear();
 	// whiten l graph picturebox
 	pictureBox2->Image = nullptr;
 	pictureBox2->Refresh();
