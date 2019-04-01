@@ -21,6 +21,8 @@
 std::map<size_t, std::set<size_t>>& GraphLoader::removeZeroDegreeVertices()
 {
 	fixed_neighbors = neighbors;
+	fixed_components = components;
+
 	zerodegree.clear();
 	size_t shouldbe = 1;
 	std::map<size_t, size_t> rename;
@@ -53,10 +55,21 @@ std::map<size_t, std::set<size_t>>& GraphLoader::removeZeroDegreeVertices()
 			fixed_neighbors[j].insert(rename[i.first]);
 		}
 	}
+
+	// rename vertices in components
+	for (auto& i : fixed_components)
+	{
+		for (size_t v = 0; v < i.size(); ++v)
+		{
+			if (rename.count(i[v]))
+				i[v] = rename[i[v]];
+		}
+	}
 	setVertexID(rename);
 	size_per = fixed_neighbors.size();
 	permutation.resize(size_per+1);
 	std::iota(permutation.begin(), permutation.end(), 0);
+	stackByComponents();
 
 	return fixed_neighbors;
 }
@@ -202,7 +215,11 @@ void GraphLoader::deleteEdge(System::String^ a, System::String^ b)
 	}
 	// new component? ... (v1, v2) was bridge
 	comp = components[counter];
+	auto pos = std::find(comp.begin(), comp.end(), v1);
+	comp.erase(pos);
 	bool decompose = addNeighbors(v1);
+
+
 	if (decompose)
 	{
 		std::vector<size_t> new_comp;
@@ -211,8 +228,13 @@ void GraphLoader::deleteEdge(System::String^ a, System::String^ b)
 		std::sort(comp.begin(), comp.end());
 		std::set_difference(components[counter].begin(), components[counter].end(), comp.begin(), comp.end(),
 			std::inserter(new_comp, new_comp.begin()));
-		components[counter] = comp;
-		components.push_back(new_comp);
+		if (comp.size() > 1)
+			components[counter] = comp;
+		else
+			components.erase(components.begin() + counter);
+		
+		if (new_comp.size() > 1)
+			components.push_back(new_comp);
 	}
 	// else still one component
 
@@ -231,6 +253,60 @@ std::set<size_t> GraphLoader::returnAdjacent(System::String^ name)
 		throw std::exception("Unexpected Error");
 	}
 	return neighbors[vertex];
+}
+
+// organize components in a way that all vertices from given component have adjacent numbers ... [][][]
+void GraphLoader::stackByComponents(void)
+{
+	// sort all components
+	comp_sizes.clear();
+	for (auto& i : fixed_components)
+	{
+		std::sort(i.begin(), i.end());
+	}
+
+	size_t count = fixed_components.size();
+	for (size_t i = 0; i < count; ++i)
+	{
+		comp_sizes.push_back(fixed_components[i].size());
+	}
+
+	std::vector<size_t> rename(size_per+1);
+	// vertex numbering starts at 1
+	size_t offset = 1;
+
+	for (size_t i = 0; i < count; ++i)
+	{
+		std::vector<size_t> component = fixed_components[i];
+		for (size_t j = 0; j < comp_sizes[i]; ++j)
+		{
+			size_t v = component[j];
+			rename[v] = j + offset;
+		}
+
+		offset += comp_sizes[i];
+	}
+
+	// rename neighbors
+	new_neighbors.clear();
+	std::set<size_t> temp;
+
+	for (auto const& i : fixed_neighbors)
+	{
+		// rename the vertex in neighbors
+		new_neighbors.insert(std::make_pair(rename[i.first], fixed_neighbors[i.first]));
+		// rename all edges
+		for (size_t edge : new_neighbors[rename[i.first]])
+		{
+			temp.insert(rename[edge]);
+		}
+		new_neighbors[rename[i.first]] = temp;
+		temp.clear();
+	}
+
+	resetVertexID(rename);
+	fixed_neighbors = new_neighbors;
+	return;
 }
 
 void GraphLoader::loading(System::String^ f)
@@ -277,7 +353,7 @@ size_t GraphLoader::returtVertexID(size_t n)
 	return vertexID[n];
 }
 
-void GraphLoader::resetVertexID(void)
+void GraphLoader::resetVertexID(std::vector<size_t>& permutation)
 {
 	std::vector<size_t> temp(size_per+1);
 	for (size_t i = 1; i <= size_per; ++i)
@@ -319,7 +395,7 @@ std::map<size_t, std::set<size_t>>& GraphLoader::permuteNeighbors()
 		temp.clear();
 	}
 
-	resetVertexID();
+	resetVertexID(permutation);
 
 	return new_neighbors;
 }

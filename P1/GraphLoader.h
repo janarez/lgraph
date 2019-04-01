@@ -13,6 +13,8 @@ class GraphLoader
 {
 	std::vector<size_t> zerodegree;
 	std::map<size_t, std::set<size_t>> fixed_neighbors;
+	std::vector<std::vector<size_t>> fixed_components;
+
 	std::vector<size_t> vertexID;
 	std::vector<size_t> fixed_vertexID;
 
@@ -22,12 +24,14 @@ class GraphLoader
 
 	size_t vertexCount;
 	
-	void resetVertexID(void);
+	void resetVertexID(std::vector<size_t>& rename);
 	void setVertexID(std::map<size_t, size_t>& rename);
 
 	// list of vertices in each component
 	std::vector<size_t> comp;
 	bool addNeighbors(size_t vertex);
+	std::vector<size_t> comp_sizes;
+	void stackByComponents(void);
 
 public:
 	std::map<size_t, std::set<size_t>> neighbors;

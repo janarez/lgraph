@@ -127,6 +127,7 @@ System::Void P1::MyForm::button2_Click(System::Object^  sender, System::EventArg
 {
 	// set vertex count in graphloader
 	gl.setVertexCount(vertexcount);
+
 	// do magic :)
 	bool exists = false;
 	LIntersectionGraph igraph(gl.removeZeroDegreeVertices());
