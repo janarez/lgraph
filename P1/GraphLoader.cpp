@@ -1,4 +1,5 @@
 #include "GraphLoader.h"
+#include "VertexPermuter.h"
 
 #include <sstream>
 #include <vector>
@@ -364,21 +365,21 @@ void GraphLoader::resetVertexID(std::vector<size_t>& permutation)
 	return;
 }
 
-
-void GraphLoader::updatePermutation(void)
+bool GraphLoader::permuteNeighbors()
 {
-
+	VertexPermuter vp(fixed_neighbors, comp_sizes);
+	if (vp.permuteVertices())
+	{
+		igraph.initClass(size_per);
+		igraph.neighbors = setPermutation(vp.permutation);
+		return igraph.createLGraph();
+	}
+	else
+		return false;
 }
 
-std::map<size_t, std::set<size_t>>& GraphLoader::permuteNeighbors()
+std::map<size_t, std::set<size_t>>& GraphLoader::setPermutation(std::vector<size_t>& permutation)
 {
-	// updatePermutation(); // thro exception if not possible
-	bool next = std::next_permutation(permutation.begin() + 1, permutation.end());
-	//permutation = { 0, 2,3,7,9,1,6,5,10,8,4 };
-
-	if (!next)
-		throw std::exception("Tried all permutations...");
-
 	new_neighbors.clear();
 	std::set<size_t> temp;
 
@@ -396,19 +397,7 @@ std::map<size_t, std::set<size_t>>& GraphLoader::permuteNeighbors()
 	}
 
 	resetVertexID(permutation);
-
 	return new_neighbors;
-}
-
-
-bool LShape::doIntersect(LShape& a, LShape& b) const
-{
-	if ((b.bend <= a.bend) && ((a.up <= b.side && a.up >= b.up) || (a.up >= b.side && a.up <= b.up)))
-		return true;
-	else if ((a.bend <= b.bend) && ((b.up <= a.side && b.up >= a.up) || (b.up >= a.side && b.up <= a.up)))
-		return true;
-	else
-		return false;
 }
 
 

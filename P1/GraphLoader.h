@@ -1,5 +1,7 @@
 #pragma once
 
+#include "LIntersect.h"
+
 #include <sstream>
 #include <vector>
 #include <string>
@@ -33,6 +35,8 @@ class GraphLoader
 	std::vector<size_t> comp_sizes;
 	void stackByComponents(void);
 
+	std::map<size_t, std::set<size_t>>& setPermutation(std::vector<size_t>& permutation);
+
 public:
 	std::map<size_t, std::set<size_t>> neighbors;
 	std::map<size_t, std::set<size_t>> new_neighbors;
@@ -54,26 +58,8 @@ public:
 	void setVertexCount(size_t n);
 	size_t returtVertexID(size_t n);
 
-	void updatePermutation(void);
+	bool permuteNeighbors();
 
-	std::map<size_t, std::set<size_t>>& permuteNeighbors();
+	LIntersectionGraph igraph;
 };
 
-class LShape
-{
-	size_t up;		// coordinates defining Lshape
-	size_t bend;
-	size_t side;
-
-public:
-
-	bool doIntersect(LShape& a, LShape& b) const;
-
-	size_t getUp() const { return up; }
-	size_t getBend()const { return bend; }
-	size_t getSide()const { return side; }
-	void setUp(size_t a) { up = a; return; }
-	void setBend(size_t a) { bend = a; return; }
-	void setSide(size_t a) { side = a; return; }
-
-};

@@ -25,9 +25,10 @@ void PartialOrder::initializePartialOrder(size_t max)
 
 void PartialOrder::zeroMatrix(void)
 {
+	cum[0].assign({ 1 });
 	for (size_t i = 1; i <= max; ++i)
 	{
-		std::fill(cum[i].begin() + 1, cum[i].end(), 0);
+		std::fill(cum[i].begin(), cum[i].end(), 0);
 	}
 }
 

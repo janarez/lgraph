@@ -1,7 +1,7 @@
 #pragma once
 
-#include "GraphLoader.h"
 #include "PartialOrder.h"
+#include "LShape.h"
 
 #include <sstream>
 #include <vector>
@@ -40,9 +40,14 @@ public:
 
 	std::vector<LShape> shapes;
 
-	LIntersectionGraph(std::map<size_t, std::set<size_t>>& neighbors);
-	void printResult() const;
+	// constructor for vertexPermuter
+	LIntersectionGraph(size_t n);
+	// empty constructor to hold information in graphLoader
+	LIntersectionGraph() {};
+
 	bool createLGraph(void);
 
-	int returnDirection(size_t i);
+	int returnDirection(size_t i) const;
+
+	void initClass(size_t n);
 };

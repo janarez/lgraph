@@ -137,14 +137,17 @@
     <ClCompile Include="GraphLoader.cpp" />
     <ClCompile Include="MyForm.cpp" />
     <ClCompile Include="PartialOrder.cpp" />
+    <ClCompile Include="VertexPermuter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LIntersect.h" />
     <ClInclude Include="GraphLoader.h" />
+    <ClInclude Include="LShape.h" />
     <ClInclude Include="MyForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="PartialOrder.h" />
+    <ClInclude Include="VertexPermuter.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MyForm.resx">

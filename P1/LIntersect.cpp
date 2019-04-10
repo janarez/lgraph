@@ -19,13 +19,17 @@
 // constructor
 // takes in graph in the form of map of vertices to its neighbours
 
-LIntersectionGraph::LIntersectionGraph(std::map<size_t, std::set<size_t>>& n)
+LIntersectionGraph::LIntersectionGraph(size_t n)
+{
+	initClass(n);
+}
+
+void LIntersectionGraph::initClass(size_t n)
 {
 	// initializes all LShapes to zeroes;
-	neighbors = n;
-	max = neighbors.size();
+	max = n;
 	// 0 index unused
-	shapes.resize(max+1);
+	shapes.resize(max + 1);
 
 	// initializes partial order class
 	cum.initializePartialOrder(max);
@@ -305,17 +309,9 @@ bool LIntersectionGraph::createLGraph(void)
 	}
 }
 
-int LIntersectionGraph::returnDirection(size_t i)
+int LIntersectionGraph::returnDirection(size_t i) const
 {
 	return directions[i + 1];
 }
 
 
-void LIntersectionGraph::printResult() const
-{
-	for (size_t i = 0; i < shapes.size(); ++i)
-	{
-		std::cout << shapes[i].getUp() << "     " << shapes[i].getBend() << "     " << shapes[i].getSide() << std::endl;
-	}
-	return;
-}

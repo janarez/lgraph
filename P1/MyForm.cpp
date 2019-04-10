@@ -1,5 +1,4 @@
 #include "MyForm.h"
-#include "LIntersect.h"
 #include "GraphLoader.h"
 #include <vector>
 
@@ -102,7 +101,8 @@ System::Void P1::MyForm::button_MouseClick(System::Object^  sender, System::Wind
 	// add edge
 	else if (radioButton2->Checked)
 	{
-		if (!first)
+		// second vertex must be different from first one
+		if (!first && b1 != b2)
 		{
 			p2 = Point(x, y);
 			g->DrawLine(blackPen, p1, p2);
@@ -127,31 +127,10 @@ System::Void P1::MyForm::button2_Click(System::Object^  sender, System::EventArg
 {
 	// set vertex count in graphloader
 	gl.setVertexCount(vertexcount);
+	std::map<size_t, std::set<size_t>> neighbors = gl.removeZeroDegreeVertices();
 
 	// do magic :)
-	bool exists = false;
-	LIntersectionGraph igraph(gl.removeZeroDegreeVertices());
-	bool first = true;
-	do
-	{
-		if (first)
-		{
-			exists = igraph.createLGraph();
-			first = false;
-		}
-		else
-		{
-			try
-			{
-				igraph.neighbors = gl.permuteNeighbors();
-			}
-			catch (const std::exception&)
-			{
-				break;
-			}
-			exists = igraph.createLGraph();
-		}
-	} while (!exists);
+	bool exists = gl.permuteNeighbors();
 	
 	Graphics^ g;
 	g = pictureBox2->CreateGraphics();
@@ -165,7 +144,7 @@ System::Void P1::MyForm::button2_Click(System::Object^  sender, System::EventArg
 		int width = pictureBox2->Width;
 		int heigth = pictureBox2->Height;
 		// fixed in cum branch, might need fixing because indexing was changed
-		size_t count = igraph.shapes.size() -1;
+		size_t count = gl.igraph.shapes.size() -1;
 
 		int stepUp = heigth / (count + 1);
 		int stepAcross = width / (count + 1);
@@ -176,9 +155,9 @@ System::Void P1::MyForm::button2_Click(System::Object^  sender, System::EventArg
 
 		for (size_t i = 0; i < count; ++i)
 		{
-			size_t _p1 = igraph.shapes[i].getUp();
-			size_t _p2 = igraph.shapes[i].getBend();
-			size_t _p3 = igraph.shapes[i].getSide();
+			size_t _p1 = gl.igraph.shapes[i].getUp();
+			size_t _p2 = gl.igraph.shapes[i].getBend();
+			size_t _p3 = gl.igraph.shapes[i].getSide();
 
 			// - 8 so that indeces start above L shape
 			g->DrawString(gl.returtVertexID(i+1).ToString(), font ,brush, _p1*stepAcross-7, 2);
@@ -187,7 +166,8 @@ System::Void P1::MyForm::button2_Click(System::Object^  sender, System::EventArg
 			Point p0 = Point(_p1 * stepAcross, 17);
 			Point p1 = Point(_p1 * stepAcross, 17 + 0.5*stepUp);
 			Point p2 = Point(_p1 * stepAcross, 17 + _p2 * stepUp);
-			Point p3 = Point(_p3 * stepAcross + 0.5 * stepAcross * igraph.returnDirection(i), 17 + _p2 * stepUp);
+			// returnDirection() to make lines cross each other, not just touch
+			Point p3 = Point(_p3 * stepAcross + 0.5 * stepAcross * gl.igraph.returnDirection(i), 17 + _p2 * stepUp);
 
 			(i % 2) ? linePen->Color = Color::Black : linePen->Color = Color::Red;
 
