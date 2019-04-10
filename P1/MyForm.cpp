@@ -26,12 +26,14 @@ System::Void P1::MyForm::pictureBox1_MouseClick(System::Object^  sender, System:
 		button->BackColor = Color::Black;
 		button->Size = System::Drawing::Size(20, 20);
 		button->ForeColor = Color::White;
-		button->Text = vertexcount.ToString();
-		button->Font = gcnew System::Drawing::Font("Microsoft Sans Serif",7);
+		button->Padding = System::Windows::Forms::Padding(0, 0, 0, 0);
+		button->AutoSize = true;
 		button->BringToFront();
 		button->FlatStyle = FlatStyle::Flat;
 		button->FlatAppearance->BorderSize = 0;
 		button->Name = vertexcount.ToString();
+		button->Text = vertexcount.ToString();
+		button->Font = gcnew System::Drawing::Font("Microsoft Sans Serif", 7);
 		button->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::button_MouseClick);
 		
 		// register vertex
@@ -81,7 +83,7 @@ System::Void P1::MyForm::button_MouseClick(System::Object^  sender, System::Wind
 	// delete edge
 	else if (radioButton4->Checked)
 	{
-		if (!first)
+		if (!first && b1 != b2)
 		{
 			p2 = Point(x, y);
 			g->DrawLine(whitePen, p1, p2);

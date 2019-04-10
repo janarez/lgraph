@@ -90,8 +90,6 @@ void GraphLoader::setVertexID(std::map<size_t, size_t>& rename)
 	{
 		vertexID[i.second] = i.first;
 	}
-
-	fixed_vertexID = vertexID;
 }
 
 
@@ -203,8 +201,10 @@ void GraphLoader::deleteEdge(System::String^ a, System::String^ b)
 	{
 		throw std::exception("Unexpected Error");
 	}
-	neighbors[v1].erase(v2);
-	neighbors[v2].erase(v1);
+	if (neighbors[v1].erase(v2))
+		neighbors[v2].erase(v1);
+	else
+		return;
 
 	// find correct component
 	size_t counter = 0;
@@ -359,7 +359,7 @@ void GraphLoader::resetVertexID(std::vector<size_t>& permutation)
 	std::vector<size_t> temp(size_per+1);
 	for (size_t i = 1; i <= size_per; ++i)
 	{
-		temp[permutation[i]] = fixed_vertexID[i];
+		temp[permutation[i]] = vertexID[i];
 	}
 	vertexID = temp;
 	return;
