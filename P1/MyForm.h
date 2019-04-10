@@ -227,6 +227,7 @@ namespace P1 {
 			this->Controls->Add(this->radioButton1);
 			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedDialog;
 			this->MaximizeBox = false;
+			this->MinimizeBox = false;
 			this->Name = L"MyForm";
 			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
 			this->Text = L"L Intersection Graph";
