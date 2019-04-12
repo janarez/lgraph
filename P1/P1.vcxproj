@@ -137,6 +137,7 @@
     <ClCompile Include="GraphLoader.cpp" />
     <ClCompile Include="MyForm.cpp" />
     <ClCompile Include="PartialOrder.cpp" />
+    <ClCompile Include="Permutation.cpp" />
     <ClCompile Include="VertexPermuter.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -147,6 +148,7 @@
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="PartialOrder.h" />
+    <ClInclude Include="Permutation.h" />
     <ClInclude Include="VertexPermuter.h" />
   </ItemGroup>
   <ItemGroup>
