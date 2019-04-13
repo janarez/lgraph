@@ -168,6 +168,8 @@ void GraphLoader::deleteVertex(System::String^ n)
 	for (size_t u : neighbors[vertex])
 		neighbors[u].erase(vertex);
 	neighbors.erase(vertex);
+
+	// must handle new components here ...
 }
 
 bool GraphLoader::addNeighbors(size_t vertex)

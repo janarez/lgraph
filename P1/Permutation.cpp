@@ -101,7 +101,7 @@ bool Permutation::newPermutation(std::vector<size_t>& usable)
 		else
 		{
 			size_t temp = usable[m - 1];
-			if (usable[pos] < temp)
+			if (temp > usable[m-2])
 				return false;
 			usable.pop_back();
 			usable.insert(usable.begin() + pos, temp);
