@@ -93,6 +93,9 @@ bool Permutation::newPermutation(std::vector<size_t>& usable)
 					usable[m-1] = temp;
 					if (newPermutation(usable))
 						return true;
+					// revert swap
+					usable[j] = temp;
+					usable[m - 1] = v;
 				}
 				return false;
 			}	
@@ -107,6 +110,10 @@ bool Permutation::newPermutation(std::vector<size_t>& usable)
 			usable.insert(usable.begin() + pos, temp);
 			if (newPermutation(usable))
 				return true;
+			// revert swap
+			usable.erase(usable.begin() + pos);
+			usable.push_back(temp);
+
 		}
 	}
 	return false;
