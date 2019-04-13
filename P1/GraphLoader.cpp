@@ -164,12 +164,17 @@ void GraphLoader::deleteVertex(System::String^ n)
 	{
 		throw std::exception("Unexpected Error");
 	}
-	// delete vertex from edges
-	for (size_t u : neighbors[vertex])
-		neighbors[u].erase(vertex);
+	// delete all edges from vertex
+	// done thriugh deleteEdge to handle new components
+	while (neighbors[vertex].begin() != neighbors[vertex].end())
+	{
+		System::String^ s = gcnew System::String((*neighbors[vertex].begin()).ToString());
+		deleteEdge(n, s);
+	}
+
+	// erase the empty set
 	neighbors.erase(vertex);
 
-	// must handle new components here ...
 }
 
 bool GraphLoader::addNeighbors(size_t vertex)
