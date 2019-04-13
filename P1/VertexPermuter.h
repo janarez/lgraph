@@ -31,6 +31,9 @@ class VertexPermuter
 	// sets matrix for a given components - at the beggining
 	void setMatrix(size_t start, size_t size);
 
+	// selects only neighbors from a given component
+	std::map<size_t, std::set<size_t>>& setNeighbors(size_t offset, size_t n);
+
 	// fills permutation with correct permutation of one component
 	void fillPermutation(size_t offset, std::vector<size_t>& perm);
 

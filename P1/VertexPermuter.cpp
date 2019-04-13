@@ -19,8 +19,8 @@ bool VertexPermuter::permuteVertices(void)
 }
 
 bool VertexPermuter::createGraph(size_t offset, size_t n)
-{
-	Permutation p(neighbors,matrix);
+{	
+	Permutation p(setNeighbors(offset, n),matrix);
 	
 	std::vector<size_t> result = p.lookForPermutation();
 
@@ -31,6 +31,24 @@ bool VertexPermuter::createGraph(size_t offset, size_t n)
 		fillPermutation(offset, result);
 		return true;
 	}
+}
+
+std::map<size_t, std::set<size_t>>& VertexPermuter::setNeighbors(size_t v, size_t n)
+{
+	new_neighbors.clear();
+	std::set<size_t> temp;
+
+	for (size_t row = v; row < v + n; ++row)
+	{
+		for (auto const& i : neighbors[row])
+		{
+			temp.insert(i - v + 1);
+		}
+		new_neighbors[row - v + 1] = temp;
+		temp.clear();
+	}
+
+	return new_neighbors;
 }
 
 void VertexPermuter::setMatrix(size_t start, size_t size)
