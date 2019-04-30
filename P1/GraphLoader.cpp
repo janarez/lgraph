@@ -354,7 +354,8 @@ void GraphLoader::load(std::istream& is)
 		}
 		catch (const std::exception&)
 		{
-			throw std::exception("File must be formatted such that there is one edge on each line. Vertices are numbers.");
+			std::cerr << "File must be formatted such that there is one edge on each line. Vertices are numbers." << std::endl;
+			return;
 		}	
 	}
 }
