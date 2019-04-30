@@ -105,12 +105,23 @@ void GraphLoader::registerEdge(System::String^ a, System::String^ b)
 
 	try
 	{
-		v1 = stoi(msclr::interop::marshal_as<std::string>(a));
-		v2 = stoi(msclr::interop::marshal_as<std::string>(b));
+		// use stoul to check for negative numbers in file
+		int u1 = stoi(msclr::interop::marshal_as<std::string>(a));
+		int u2 = stoi(msclr::interop::marshal_as<std::string>(b));
+
+		if (u1 < 1 || u2 < 0)
+			throw std::exception();
+		else
+		{
+			v1 = u1;
+			v2 = u2;
+		}
+
 	}
 	catch (const std::exception&)
 	{
-		throw std::exception("Unexpected Error");
+		std::cerr << "Vertex value error" << std::endl;
+		return;
 	}
 	neighbors[v1].insert(v2);
 	neighbors[v2].insert(v1);

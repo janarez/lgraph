@@ -266,7 +266,7 @@ System::Void P1::MyForm::button1_Click(System::Object^  sender, System::EventArg
 	gl.loading(file);
 
 	// must set vertexcount here, so that setVertexIDs works
-	vertexcount = gl.neighbors.size();
+	vertexcount = gl.neighbors.rbegin()->first;
 	drawLoadedGraph();
 	// redraw the control to see edges
 	pictureBox1->Invalidate();
