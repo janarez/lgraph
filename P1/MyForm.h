@@ -271,5 +271,8 @@ namespace P1 {
 	// clear all that was done so far
 	// deletes all drawn and loaded
     private: System::Void button3_Click(System::Object^  sender, System::EventArgs^  e);
+
+	// draw loaded graph
+	private: System::Void drawLoadedGraph(void);
 };
 }

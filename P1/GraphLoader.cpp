@@ -330,6 +330,7 @@ void GraphLoader::loading(System::String^ f)
 	load(file);
 }
 
+// when graph is loaded from file all drawings are cleared
 void GraphLoader::load(std::istream& is)
 {
 	std::stringstream ss;
@@ -343,11 +344,13 @@ void GraphLoader::load(std::istream& is)
 		try
 		{
 			getline(ss, line, ' ');
-			int left = stoi(line);
+			System::String^ left = gcnew System::String(line.c_str());
+			
 			getline(ss, line, ' ');
-			int right = stoi(line);
-			neighbors[left].insert(right);
-			neighbors[right].insert(left);
+			System::String^ right = gcnew System::String(line.c_str());	
+
+			// not necessary to register yet unused vertex thanks to the map []operator
+			registerEdge(left, right);
 		}
 		catch (const std::exception&)
 		{

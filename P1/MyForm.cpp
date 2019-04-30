@@ -20,6 +20,7 @@ System::Void P1::MyForm::pictureBox1_MouseClick(System::Object^  sender, System:
 	if (radioButton1->Checked)
 	{
 		++vertexcount;
+
 		Button^ button = gcnew System::Windows::Forms::Button();
 		this->Controls->Add(button);
 		button->Location = System::Drawing::Point(e->X, e->Y);
@@ -198,7 +199,15 @@ System::Void P1::MyForm::button1_Click(System::Object^  sender, System::EventArg
 	button3_Click(sender,e);
 	gl.loading(file);
 
+	// must set vertexcount here, so that setVertexIDs works
+	vertexcount = gl.neighbors.size();
+	drawLoadedGraph();
+}
+
+System::Void P1::MyForm::drawLoadedGraph(void)
+{
 	// display that graph file has been loaded
+	// will change
 	String^ string = "Graph file is loaded";
 	System::Drawing::Font^ font = gcnew System::Drawing::Font("Arial", 16);
 	SolidBrush^ brush = gcnew SolidBrush(Color::Black);
@@ -206,9 +215,6 @@ System::Void P1::MyForm::button1_Click(System::Object^  sender, System::EventArg
 	Graphics^ g;
 	g = pictureBox1->CreateGraphics();
 	g->DrawString(string, font, brush, point);
-
-	// must set vertexcount here, so that setVertexIDs works
-	vertexcount = gl.neighbors.size();
 }
 
 // clear all that was done so far
