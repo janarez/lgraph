@@ -188,12 +188,12 @@ System::Void P1::MyForm::button_MouseClick(System::Object^  sender, System::Wind
 // also shows result in picturebox2
 System::Void P1::MyForm::button2_Click(System::Object^  sender, System::EventArgs^  e)
 {
+	// clear previous solution
+	solution.clear();
 	// make sure output window is empty -> whiten l graph picturebox
 	pictureBox2->Image = nullptr;
 	pictureBox2->Refresh();
 
-	// clear previous solution
-	solution.clear();
 	
 	// set vertex count in graphloader
 	gl.setVertexCount(vertexcount);
