@@ -128,6 +128,10 @@ System::Void P1::MyForm::button_MouseClick(System::Object^  sender, System::Wind
 // also shows result in picturebox2
 System::Void P1::MyForm::button2_Click(System::Object^  sender, System::EventArgs^  e)
 {
+	// make sure output window is empty -> whiten l graph picturebox
+	pictureBox2->Image = nullptr;
+	pictureBox2->Refresh();	
+	
 	// set vertex count in graphloader
 	gl.setVertexCount(vertexcount);
 	std::map<size_t, std::set<size_t>> neighbors = gl.removeZeroDegreeVertices();
@@ -137,10 +141,6 @@ System::Void P1::MyForm::button2_Click(System::Object^  sender, System::EventArg
 	
 	Graphics^ g;
 	g = pictureBox2->CreateGraphics();
-
-	// make sure output window is empty -> whiten l graph picturebox
-	pictureBox2->Image = nullptr;
-	pictureBox2->Refresh();
 	
 	if (exists)
 	{
