@@ -1,9 +1,13 @@
 #include "MyForm.h"
 #include "GraphLoader.h"
 #include <vector>
+#include <cmath>
+#include <tuple>
 
 
 GraphLoader gl;
+std::vector<std::tuple<int,int,int,int>> edges;
+std::vector<std::tuple<int, int, int, int,int,int>> solution;
 
 [System::STAThread]
 int main(void)
@@ -32,6 +36,49 @@ System::Void P1::MyForm::pictureBox1_MouseClick(System::Object^  sender, System:
 		// register vertex
 		gl.registerVertex(vertexcount);
 	}
+}
+
+// painting all edges
+System::Void P1::MyForm::pictureBox1_Paint(System::Object^  sender, System::Windows::Forms::PaintEventArgs^  e)
+{
+	Graphics^ g;
+	g = e->Graphics;
+
+	// redraw edges
+	Pen^ blackPen = gcnew Pen(Color::Black, 1);
+	for (auto const& edge : edges)
+	{
+		g->DrawLine(blackPen, std::get<0>(edge), std::get<1>(edge), std::get<2>(edge), std::get<3>(edge));
+	}
+}
+
+// repainting solution
+System::Void P1::MyForm::pictureBox2_Paint(System::Object^  sender, System::Windows::Forms::PaintEventArgs^  e)
+{
+	Graphics^ g;
+	g = e->Graphics;
+
+	//redraw solution
+	Pen^ linePen = gcnew Pen(Color::Black, 2);
+
+	// might interfere if too many vertices are used (35 is still ok, then the form should be enlarged rather than text size)
+	System::Drawing::Font^ font = gcnew System::Drawing::Font("Microsoft Sans Serif", 10);
+	SolidBrush^ brush = gcnew SolidBrush(Color::Black);
+
+	size_t i = 0;
+	for (auto const& l : solution)
+	{
+		
+		// - 7 so that indeces start above L shape
+		g->DrawString(gl.returtVertexID(i + 1).ToString(), font, brush, std::get<0>(l) - 7, 2);
+
+		(i % 2) ? linePen->Color = Color::Black : linePen->Color = Color::Red;
+		array<System::Drawing::Point>^ points = {Point(std::get<0>(l),std::get<1>(l)), Point(std::get<2>(l),std::get<3>(l)),Point(std::get<4>(l),std::get<5>(l))};
+
+		g->DrawLines(linePen, points);
+		++i;
+	}
+
 }
 
 // adding or deleting edges
@@ -80,6 +127,19 @@ System::Void P1::MyForm::button_MouseClick(System::Object^  sender, System::Wind
 		{
 			p2 = Point(x, y);
 			g->DrawLine(whitePen, p1, p2);
+
+			// erase edge from edges collection; must check both p1,p2 and p2,p1 edges
+			auto it = std::find(edges.begin(), edges.end(), std::tuple<int, int, int, int>(p1.X, p1.Y, x, y));
+			// check that edge was actually there, then delete
+			if (it != edges.end())
+				edges.erase(it);
+			else
+			{
+				it = std::find(edges.begin(), edges.end(), std::tuple<int, int, int, int>(x, y, p1.X, p1.Y));
+				if (it != edges.end())
+					edges.erase(it);
+			}
+
 			b1->BackColor = Color::Black;
 			b2->BackColor = Color::Black;
 			first = true;
@@ -101,6 +161,14 @@ System::Void P1::MyForm::button_MouseClick(System::Object^  sender, System::Wind
 		{
 			p2 = Point(x, y);
 			g->DrawLine(blackPen, p1, p2);
+
+			// only add each edge once
+			if (std::find(edges.begin(), edges.end(), std::tuple<int, int, int, int>(p1.X, p1.Y, x, y)) == edges.end() &&
+				std::find(edges.begin(), edges.end(), std::tuple<int, int, int, int>(x, y, p1.X, p1.Y)) == edges.end())
+			{
+				edges.push_back(std::tuple<int, int, int, int>(p1.X, p1.Y, x, y));
+			}
+
 			b1->BackColor = Color::Black;
 			b2->BackColor = Color::Black;
 			first = true;
@@ -122,7 +190,10 @@ System::Void P1::MyForm::button2_Click(System::Object^  sender, System::EventArg
 {
 	// make sure output window is empty -> whiten l graph picturebox
 	pictureBox2->Image = nullptr;
-	pictureBox2->Refresh();	
+	pictureBox2->Refresh();
+
+	// clear previous solution
+	solution.clear();
 	
 	// set vertex count in graphloader
 	gl.setVertexCount(vertexcount);
@@ -154,18 +225,21 @@ System::Void P1::MyForm::button2_Click(System::Object^  sender, System::EventArg
 			size_t _p2 = gl.igraph.shapes[i].getBend();
 			size_t _p3 = gl.igraph.shapes[i].getSide();
 
-			// - 8 so that indeces start above L shape
+			// - 7 so that indeces start above L shape
 			g->DrawString(gl.returtVertexID(i+1).ToString(), font ,brush, _p1*stepAcross-7, 2);
 
 			// 17 is pixel offset for text with indices
-			Point p0 = Point(_p1 * stepAcross, 17);
-			Point p1 = Point(_p1 * stepAcross, 17 + 0.5*stepUp);
-			Point p2 = Point(_p1 * stepAcross, 17 + _p2 * stepUp);
+			size_t offset = 17;
+
+			Point p0 = Point(_p1 * stepAcross, offset);
+			Point p1 = Point(_p1 * stepAcross, offset + 0.5*stepUp);
+			Point p2 = Point(_p1 * stepAcross, offset + _p2 * stepUp);
 			// returnDirection() to make lines cross each other, not just touch
 			Point p3 = Point(_p3 * stepAcross + 0.5 * stepAcross * gl.igraph.returnDirection(i), 17 + _p2 * stepUp);
 
 			(i % 2) ? linePen->Color = Color::Black : linePen->Color = Color::Red;
 
+			solution.push_back(std::tuple<int,int,int,int,int,int>(p0.X, p0.Y, p2.X, p2.Y, p3.X, p3.Y));
 			array<System::Drawing::Point>^ points = { p0,p1,p2,p3 };
 			g->DrawLines(linePen, points);
 		}
@@ -194,19 +268,47 @@ System::Void P1::MyForm::button1_Click(System::Object^  sender, System::EventArg
 	// must set vertexcount here, so that setVertexIDs works
 	vertexcount = gl.neighbors.size();
 	drawLoadedGraph();
+	// redraw the control to see edges
+	pictureBox1->Invalidate();
 }
 
 System::Void P1::MyForm::drawLoadedGraph(void)
 {
-	// display that graph file has been loaded
-	// will change
-	String^ string = "Graph file is loaded";
-	System::Drawing::Font^ font = gcnew System::Drawing::Font("Arial", 16);
-	SolidBrush^ brush = gcnew SolidBrush(Color::Black);
-	PointF point = PointF(10, 10);
-	Graphics^ g;
-	g = pictureBox1->CreateGraphics();
-	g->DrawString(string, font, brush, point);
+	// calculate polygon centre
+	int mid_x = pictureBox1->Width / 2;
+	int mid_y = pictureBox2->Height / 2;
+	float r = (mid_x < mid_y) ? 0.8 * mid_x : 0.8 * mid_y;
+	float angle = 2 * pi / vertexcount;
+
+	// store coordinates
+	std::vector<int> x(vertexcount+1);
+	std::vector<int> y(vertexcount+1);
+
+	for (size_t v = 1; v <= vertexcount; ++v)
+	{
+		x[v] = (int)(mid_x + r * cos(angle * v));
+		y[v] = (int)(mid_y + r * sin(angle * v));
+	}
+
+	// create vertices and draw the edges
+	for (size_t v = 1; v <= vertexcount; ++v)
+	{
+		// add vertex
+		Vertex^ vertex = gcnew Vertex(v, x[v], y[v]);
+		this->Controls->Add(vertex);
+		vertex->BringToFront();
+
+		// add mouse click handler
+		vertex->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::button_MouseClick);
+
+		// register all edges and then call picturebox paint event to draw them
+		for (auto u : gl.neighbors[v])
+		{
+			// register only once
+			if(u < v)
+				edges.push_back(std::tuple<int,int,int,int>(x[u], y[u], x[v], y[v]));
+		}
+	}
 }
 
 // clear all that was done so far
@@ -233,4 +335,5 @@ System::Void P1::MyForm::button3_Click(System::Object^  sender, System::EventArg
 	// reset all form variables
 	vertexcount = 0;
 	first = true;
+	edges.clear();
 }

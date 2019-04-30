@@ -170,6 +170,7 @@ namespace P1 {
 			this->pictureBox2->Size = System::Drawing::Size(473, 345);
 			this->pictureBox2->TabIndex = 8;
 			this->pictureBox2->TabStop = false;
+			this->pictureBox2->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &MyForm::pictureBox2_Paint);
 			// 
 			// button3
 			// 
@@ -227,7 +228,6 @@ namespace P1 {
 			this->Controls->Add(this->radioButton1);
 			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedDialog;
 			this->MaximizeBox = false;
-			this->MinimizeBox = false;
 			this->Name = L"MyForm";
 			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
 			this->Text = L"L Intersection Graph";
@@ -244,16 +244,20 @@ namespace P1 {
 
 	private: System::Void MyForm_Load(System::Object^  sender, System::EventArgs^  e)
 	{}
+	
+	// repainting all edges
+	private: System::Void pictureBox1_Paint(System::Object^  sender, System::Windows::Forms::PaintEventArgs^  e);
+	
+	// repainting solution
+	private: System::Void pictureBox2_Paint(System::Object^  sender, System::Windows::Forms::PaintEventArgs^  e);
 
-	private: System::Void pictureBox1_Paint(System::Object^  sender, System::Windows::Forms::PaintEventArgs^  e)
-	{}
-		
 	private:
 		Point p1, p2;
 		Button^ b1;
 		Button^ b2;
 		bool first = true;
 		size_t vertexcount = 0;
+		static const double pi = 3.14;
 	
 	// creating vertices
 	private: System::Void pictureBox1_MouseClick(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e);
