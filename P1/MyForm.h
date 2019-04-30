@@ -274,5 +274,26 @@ namespace P1 {
 
 	// draw loaded graph
 	private: System::Void drawLoadedGraph(void);
+
+	private:
+
+		ref class Vertex : public System::Windows::Forms::Button
+		{
+		public:
+			Vertex(size_t n, int x, int y)
+			{				
+				this->Location = System::Drawing::Point(x,y);
+				this->BackColor = Color::Black;
+				this->Size = System::Drawing::Size(20, 20);
+				this->ForeColor = Color::White;
+				this->Padding = System::Windows::Forms::Padding(0, 0, 0, 0);
+				this->AutoSize = true;
+				this->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+				this->FlatAppearance->BorderSize = 0;
+				this->Name = n.ToString();
+				this->Text = n.ToString();
+				this->Font = gcnew System::Drawing::Font("Microsoft Sans Serif", 7);
+			}
+		};
 };
 }
