@@ -119,6 +119,18 @@ System::Void P1::MyForm::button_MouseClick(System::Object^  sender, System::Wind
 				int yy = b->Top;
 				p2 = Point(xx, yy);
 				g->DrawLine(whitePen, Point(x, y), p2);
+
+				// erase edge from edges collection; must check both p1,p2 and p2,p1 edges
+				auto it = std::find(edges.begin(), edges.end(), std::tuple<int, int, int, int>(xx, yy, x, y));
+				// check that edge was actually there, then delete
+				if (it != edges.end())
+					edges.erase(it);
+				else
+				{
+					it = std::find(edges.begin(), edges.end(), std::tuple<int, int, int, int>(x, y, xx, yy));
+					if (it != edges.end())
+						edges.erase(it);
+				}
 			}
 		}
 
