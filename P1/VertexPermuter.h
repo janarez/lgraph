@@ -8,7 +8,7 @@
 #include <utility>
 #include <tuple>
 
-
+// class that finds l graph by using Permutation class for each graph component
 class VertexPermuter
 {
 	std::map<size_t, std::set<size_t>> neighbors;

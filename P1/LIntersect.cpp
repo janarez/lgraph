@@ -1,20 +1,5 @@
 #include "LIntersect.h"
-#include "GraphLoader.h"
-#include "PartialOrder.h"
 
-#include <sstream>
-#include <vector>
-#include <string>
-#include <map>
-#include <ostream>
-#include <algorithm>
-#include <set>
-#include <numeric>
-#include <iostream>
-#include <exception>
-#include <istream>
-#include <fstream>
-#include <iterator>
 
 // constructor
 // takes in graph in the form of map of vertices to its neighbours

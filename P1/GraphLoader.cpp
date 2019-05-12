@@ -1,23 +1,4 @@
 #include "GraphLoader.h"
-#include "VertexPermuter.h"
-
-#include <sstream>
-#include <vector>
-#include <string>
-#include <map>
-#include <ostream>
-#include <algorithm>
-#include <set>
-#include <numeric>
-#include <iostream>
-#include <exception>
-#include<iostream>
-#include<istream>
-#include<fstream>
-#include <iterator>
-
-// for converting from System::String^ to std::string
-#include <msclr\marshal_cppstd.h>
 
 std::map<size_t, std::set<size_t>>& GraphLoader::removeZeroDegreeVertices()
 {
@@ -26,6 +7,8 @@ std::map<size_t, std::set<size_t>>& GraphLoader::removeZeroDegreeVertices()
 
 	zerodegree.clear();
 	size_t shouldbe = 1;
+
+	// holds new names from vertices after gaps are removed
 	std::map<size_t, size_t> rename;
 
 	for (auto i : fixed_neighbors)
@@ -35,12 +18,15 @@ std::map<size_t, std::set<size_t>>& GraphLoader::removeZeroDegreeVertices()
 			zerodegree.push_back(i.first);
 			continue;
 		}
+		// should be has next vertex id
 		if (i.first != shouldbe)
 		{
 			rename.insert(std::make_pair(i.first, shouldbe));
 		}
 		++shouldbe;
 	}
+
+	// deletes zerodegree from map
 	for (auto const i : zerodegree)
 		fixed_neighbors.erase(i);
 
@@ -58,6 +44,7 @@ std::map<size_t, std::set<size_t>>& GraphLoader::removeZeroDegreeVertices()
 	}
 
 	// rename vertices in components
+	// zero degree not handled as they are not in any component
 	for (auto& i : fixed_components)
 	{
 		for (size_t v = 0; v < i.size(); ++v)
@@ -69,6 +56,7 @@ std::map<size_t, std::set<size_t>>& GraphLoader::removeZeroDegreeVertices()
 	setVertexID(rename);
 	size_per = fixed_neighbors.size();
 	permutation.resize(size_per+1);
+	// 1 ... N first permutation guess
 	std::iota(permutation.begin(), permutation.end(), 0);
 	stackByComponents();
 
@@ -81,6 +69,7 @@ void GraphLoader::setVertexCount(size_t n)
 	return;
 }
 
+// assigns permutation ID to real ID of vertex
 void GraphLoader::setVertexID(std::map<size_t, size_t>& rename)
 {
 	vertexID.resize(vertexCount + 1);
@@ -105,7 +94,7 @@ void GraphLoader::registerEdge(System::String^ a, System::String^ b)
 
 	try
 	{
-		// use stoul to check for negative numbers in file
+		// also check for negative numbers in file
 		int u1 = stoi(msclr::interop::marshal_as<std::string>(a));
 		int u2 = stoi(msclr::interop::marshal_as<std::string>(b));
 
@@ -147,15 +136,18 @@ void GraphLoader::registerEdge(System::String^ a, System::String^ b)
 	}
 
 	// update components
+	// new component
 	if (c_v1 == -1 && c_v2 == -1)
 	{
 		std::vector<size_t> newc{ v1, v2 };
 		components.push_back(newc);
 	}
+	// new vertex added to component of the other
 	else if (c_v1 == -1)
 		components[c_v2].push_back(v1);
 	else if (c_v2 == -1)
 		components[c_v1].push_back(v2);
+	// two components join
 	else if (c_v1 != c_v2)
 	{
 		components[c_v1].insert(components[c_v1].end(), components[c_v2].begin(), components[c_v2].end());
@@ -176,7 +168,7 @@ void GraphLoader::deleteVertex(System::String^ n)
 		throw std::exception("Unexpected Error");
 	}
 	// delete all edges from vertex
-	// done thriugh deleteEdge to handle new components
+	// done through deleteEdge to handle new components
 	while (neighbors[vertex].begin() != neighbors[vertex].end())
 	{
 		System::String^ s = gcnew System::String((*neighbors[vertex].begin()).ToString());
@@ -188,6 +180,8 @@ void GraphLoader::deleteVertex(System::String^ n)
 
 }
 
+// recursive function that traverses neighbors of vertex and returns true if comp remains nonempty
+// comp in private variable vector
 bool GraphLoader::addNeighbors(size_t vertex)
 {
 	if (comp.empty())
@@ -238,7 +232,7 @@ void GraphLoader::deleteEdge(System::String^ a, System::String^ b)
 	comp.erase(pos);
 	bool decompose = addNeighbors(v1);
 
-
+	// vertices remained in comp after removal of vertices connected to v1
 	if (decompose)
 	{
 		std::vector<size_t> new_comp;
@@ -247,11 +241,12 @@ void GraphLoader::deleteEdge(System::String^ a, System::String^ b)
 		std::sort(comp.begin(), comp.end());
 		std::set_difference(components[counter].begin(), components[counter].end(), comp.begin(), comp.end(),
 			std::inserter(new_comp, new_comp.begin()));
+		// only keep comp if at least one edge remained
 		if (comp.size() > 1)
 			components[counter] = comp;
 		else
 			components.erase(components.begin() + counter);
-		
+		// add the new component
 		if (new_comp.size() > 1)
 			components.push_back(new_comp);
 	}
@@ -387,9 +382,11 @@ void GraphLoader::resetVertexID(std::vector<size_t>& permutation)
 	return;
 }
 
+// finds solution using the VertexPermuter class
 bool GraphLoader::permuteNeighbors()
 {
 	VertexPermuter vp(fixed_neighbors, comp_sizes);
+	// solution found, process is rerun for correct permutation to set Lshapes in igraph instance of this class
 	if (vp.permuteVertices())
 	{
 		igraph.initClass(size_per);
@@ -400,6 +397,7 @@ bool GraphLoader::permuteNeighbors()
 		return false;
 }
 
+// resets vertex IDs according to final solution permutation
 std::map<size_t, std::set<size_t>>& GraphLoader::setPermutation(std::vector<size_t>& permutation)
 {
 	new_neighbors.clear();

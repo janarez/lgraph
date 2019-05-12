@@ -3,13 +3,12 @@
 #include "PartialOrder.h"
 #include "LShape.h"
 
-#include <sstream>
 #include <vector>
 #include <string>
 #include <map>
-#include <ostream>
+#include <algorithm>
 #include <set>
-#include <unordered_set>
+#include <numeric>
 
 // L graph is represented in the form of matrix
 // matrix dimension is #vertices X #vertices

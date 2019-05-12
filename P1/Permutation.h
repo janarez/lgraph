@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <numeric>
 
-
+// this class goes through vertex permutations to feed LIntersectionGraph
 class Permutation
 {
 	LIntersectionGraph igraph;
@@ -36,7 +36,7 @@ class Permutation
 
 public:
 
-	// constructed with map of neighbors and compo
+	// constructed with map of neighbors and adjacency matrix
 	Permutation(std::map<size_t, std::set<size_t>>& nb, std::vector<std::vector<size_t>>& mx)
 	{
 		neighbors = nb;

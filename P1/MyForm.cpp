@@ -4,9 +4,11 @@
 #include <cmath>
 #include <tuple>
 
-
+// class for loading drawn / file graph
 GraphLoader gl;
+// keeps all edges for onpaint event
 std::vector<std::tuple<int,int,int,int>> edges;
+// keeps the l graph solution for onpaint event
 std::vector<std::tuple<int, int, int, int,int,int>> solution;
 
 [System::STAThread]
@@ -68,7 +70,7 @@ System::Void P1::MyForm::pictureBox2_Paint(System::Object^  sender, System::Wind
 	size_t i = 0;
 	for (auto const& l : solution)
 	{
-		
+		// print shapes ids
 		// - 7 so that indeces start above L shape
 		g->DrawString(gl.returtVertexID(i + 1).ToString(), font, brush, std::get<0>(l) - 7, 2);
 
@@ -91,10 +93,12 @@ System::Void P1::MyForm::button_MouseClick(System::Object^  sender, System::Wind
 	Pen^ whitePen = gcnew Pen(Color::White, 1);
 
 	Button^ button = safe_cast<Button^>(sender);
+	// mark the button
 	button->BackColor = Color::Red;
 	int x = button->Left;
 	int y = button->Top;
 
+	// remembers vertex in case it's the first one for edge handling
 	if (first)
 		b1 = button;
 	else
@@ -108,6 +112,7 @@ System::Void P1::MyForm::button_MouseClick(System::Object^  sender, System::Wind
 		// get outgoing edges
 		for each (size_t n in gl.returnAdjacent(name))
 		{
+			// repaints outgoing edges white
 			for each (Control^ b in this->Controls->Find(n.ToString(), true))
 			{
 				int xx = b->Left;
@@ -123,6 +128,7 @@ System::Void P1::MyForm::button_MouseClick(System::Object^  sender, System::Wind
 	// delete edge
 	else if (radioButton4->Checked)
 	{
+		// checked that valid vertex pair is found
 		if (!first && b1 != b2)
 		{
 			p2 = Point(x, y);
@@ -146,6 +152,7 @@ System::Void P1::MyForm::button_MouseClick(System::Object^  sender, System::Wind
 			// register deleting edge
 			gl.deleteEdge(b1->Name, b2->Name);
 		}
+		// set p1 to marked vertex location
 		else
 		{
 			p1 = Point(x, y);
@@ -197,21 +204,23 @@ System::Void P1::MyForm::button2_Click(System::Object^  sender, System::EventArg
 	
 	// set vertex count in graphloader
 	gl.setVertexCount(vertexcount);
+	// remove zero degree vertices form neighbors
 	std::map<size_t, std::set<size_t>> neighbors = gl.removeZeroDegreeVertices();
 
-	// do magic :)
+	// find solution if it exists
 	bool exists = gl.permuteNeighbors();
 	
 	Graphics^ g;
 	g = pictureBox2->CreateGraphics();
 	
+	// draw solution
 	if (exists)
 	{
 		int width = pictureBox2->Width;
 		int heigth = pictureBox2->Height;
-		// fixed in cum branch, might need fixing because indexing was changed
 		size_t count = gl.igraph.shapes.size() -1;
 
+		// parameters for distance between l shapes
 		int stepUp = heigth / (count + 1);
 		int stepAcross = width / (count + 1);
 		Pen^ linePen = gcnew Pen(Color::BlueViolet, 2);
@@ -219,6 +228,7 @@ System::Void P1::MyForm::button2_Click(System::Object^  sender, System::EventArg
 		System::Drawing::Font^ font = gcnew System::Drawing::Font("Microsoft Sans Serif", 10);
 		SolidBrush^ brush = gcnew SolidBrush(Color::Black);
 
+		// draw l shapes one by one
 		for (size_t i = 0; i < count; ++i)
 		{
 			size_t _p1 = gl.igraph.shapes[i].getUp();
@@ -239,12 +249,14 @@ System::Void P1::MyForm::button2_Click(System::Object^  sender, System::EventArg
 
 			(i % 2) ? linePen->Color = Color::Black : linePen->Color = Color::Red;
 
+			// insert shape into solution for redrawing
 			solution.push_back(std::tuple<int,int,int,int,int,int>(p0.X, p0.Y, p2.X, p2.Y, p3.X, p3.Y));
 			array<System::Drawing::Point>^ points = { p0,p1,p2,p3 };
 			g->DrawLines(linePen, points);
 		}
 		return;
 	}
+	// no solution found
 	else
 	{
 		String^ string = "L Representation does not exist";
@@ -261,7 +273,7 @@ System::Void P1::MyForm::button1_Click(System::Object^  sender, System::EventArg
 	OpenFileDialog^ ofd = gcnew OpenFileDialog;
 	ofd->ShowDialog();
 	String^ file = ofd->FileName;
-	// clear all
+	// clear all clicked vertices
 	button3_Click(sender,e);
 	gl.loading(file);
 
@@ -272,6 +284,7 @@ System::Void P1::MyForm::button1_Click(System::Object^  sender, System::EventArg
 	pictureBox1->Invalidate();
 }
 
+// draws loaded graph as n-sided regular polygon
 System::Void P1::MyForm::drawLoadedGraph(void)
 {
 	// calculate polygon centre
@@ -284,6 +297,7 @@ System::Void P1::MyForm::drawLoadedGraph(void)
 	std::vector<int> x(vertexcount+1);
 	std::vector<int> y(vertexcount+1);
 
+	// calculate coordinates of every vertex
 	for (size_t v = 1; v <= vertexcount; ++v)
 	{
 		x[v] = (int)(mid_x + r * cos(angle * v));
@@ -301,7 +315,7 @@ System::Void P1::MyForm::drawLoadedGraph(void)
 		// add mouse click handler
 		vertex->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::button_MouseClick);
 
-		// register all edges and then call picturebox paint event to draw them
+		// register all edges (will be painted after return)
 		for (auto u : gl.neighbors[v])
 		{
 			// register only once

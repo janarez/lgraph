@@ -1,5 +1,6 @@
 #include "VertexPermuter.h"
 
+// finds l graph solution component by component
 bool VertexPermuter::permuteVertices(void)
 {
 	size_t offset = 1;
@@ -8,7 +9,9 @@ bool VertexPermuter::permuteVertices(void)
 	{
 		size_t size = comp_size[c];
 
+		// adjacency matrix for the compoent
 		setMatrix(offset, size);
+		// find component solution
 		if (!createGraph(offset, size))
 			return false;
 
@@ -18,12 +21,15 @@ bool VertexPermuter::permuteVertices(void)
 	return true;
 }
 
+// creates Lgraph for component with vertex IDs offset to offset+n
 bool VertexPermuter::createGraph(size_t offset, size_t n)
 {	
+	// class Permutation searches for the solution using adjacency matrix to cutdown possible permutations
 	Permutation p(setNeighbors(offset, n),matrix);
 	
 	std::vector<size_t> result = p.lookForPermutation();
 
+	// fail to find solution
 	if (result.empty())
 		return false;
 	else
@@ -33,6 +39,7 @@ bool VertexPermuter::createGraph(size_t offset, size_t n)
 	}
 }
 
+// shift vertex IDs to start at 1
 std::map<size_t, std::set<size_t>>& VertexPermuter::setNeighbors(size_t v, size_t n)
 {
 	new_neighbors.clear();
@@ -51,6 +58,7 @@ std::map<size_t, std::set<size_t>>& VertexPermuter::setNeighbors(size_t v, size_
 	return new_neighbors;
 }
 
+// sets adjacency matrix for component
 void VertexPermuter::setMatrix(size_t start, size_t size)
 {
 	// ignore zeroth row / column
@@ -79,6 +87,7 @@ void VertexPermuter::setMatrix(size_t start, size_t size)
 	return;
 }
 
+// fills resulting permutation for one component
 void VertexPermuter::fillPermutation(size_t offset, std::vector<size_t>& perm)
 {
 	size_t counter = offset;

@@ -245,21 +245,24 @@ namespace P1 {
 	private: System::Void MyForm_Load(System::Object^  sender, System::EventArgs^  e)
 	{}
 	
-	// repainting all edges
+	// repainting all edges (without this, they would get lost (created in mouse event) in case of repaint)
 	private: System::Void pictureBox1_Paint(System::Object^  sender, System::Windows::Forms::PaintEventArgs^  e);
 	
 	// repainting solution
 	private: System::Void pictureBox2_Paint(System::Object^  sender, System::Windows::Forms::PaintEventArgs^  e);
-
+	
+	// helper variables
 	private:
 		Point p1, p2;
 		Button^ b1;
 		Button^ b2;
+		// tag for edge addition / deletion
 		bool first = true;
+		// maximum vertex number
 		size_t vertexcount = 0;
 		static const double pi = 3.14;
 	
-	// creating vertices
+	// creating vertices inside left picturebox1
 	private: System::Void pictureBox1_MouseClick(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e);
 	
 	// clicking on vertices
@@ -281,6 +284,7 @@ namespace P1 {
 
 	private:
 
+		// Vertex class, it is a Button with preset features and new constructor
 		ref class Vertex : public System::Windows::Forms::Button
 		{
 		public:

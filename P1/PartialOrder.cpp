@@ -1,13 +1,5 @@
 #include "PartialOrder.h"
 
-#include <vector>
-#include <string>
-#include <map>
-#include <algorithm>
-#include <set>
-#include <numeric>
-#include <exception>
-
 void PartialOrder::initializePartialOrder(size_t max)
 {
 	this->max = max;
