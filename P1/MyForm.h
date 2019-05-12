@@ -46,6 +46,7 @@ namespace P1 {
 	private: System::Windows::Forms::Button^  button3;
 	private: System::Windows::Forms::Label^  label1;
 	private: System::Windows::Forms::Label^  label2;
+	private: System::Windows::Forms::Button^  button4;
 
 	private:
 		/// <summary>
@@ -71,6 +72,7 @@ namespace P1 {
 			this->button3 = (gcnew System::Windows::Forms::Button());
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->label2 = (gcnew System::Windows::Forms::Label());
+			this->button4 = (gcnew System::Windows::Forms::Button());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox2))->BeginInit();
 			this->SuspendLayout();
@@ -132,7 +134,7 @@ namespace P1 {
 			this->button2->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->button2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9, System::Drawing::FontStyle::Bold));
 			this->button2->ForeColor = System::Drawing::Color::White;
-			this->button2->Location = System::Drawing::Point(531, 169);
+			this->button2->Location = System::Drawing::Point(531, 165);
 			this->button2->Name = L"button2";
 			this->button2->Size = System::Drawing::Size(131, 49);
 			this->button2->TabIndex = 5;
@@ -179,7 +181,7 @@ namespace P1 {
 			this->button3->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->button3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9, System::Drawing::FontStyle::Bold));
 			this->button3->ForeColor = System::Drawing::Color::White;
-			this->button3->Location = System::Drawing::Point(531, 237);
+			this->button3->Location = System::Drawing::Point(531, 233);
 			this->button3->Name = L"button3";
 			this->button3->Size = System::Drawing::Size(131, 50);
 			this->button3->TabIndex = 9;
@@ -209,12 +211,28 @@ namespace P1 {
 			this->label2->TabIndex = 11;
 			this->label2->Text = L"Resulting L graph (0 degree vertices ommited).";
 			// 
+			// button4
+			// 
+			this->button4->BackColor = System::Drawing::Color::Gray;
+			this->button4->FlatAppearance->BorderColor = System::Drawing::Color::Gray;
+			this->button4->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->button4->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9, System::Drawing::FontStyle::Bold));
+			this->button4->ForeColor = System::Drawing::Color::White;
+			this->button4->Location = System::Drawing::Point(531, 299);
+			this->button4->Name = L"button4";
+			this->button4->Size = System::Drawing::Size(131, 50);
+			this->button4->TabIndex = 12;
+			this->button4->Text = L"Save Graph";
+			this->button4->UseVisualStyleBackColor = false;
+			this->button4->Click += gcnew System::EventHandler(this, &MyForm::button4_Click);
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->BackColor = System::Drawing::Color::Silver;
 			this->ClientSize = System::Drawing::Size(1170, 578);
+			this->Controls->Add(this->button4);
 			this->Controls->Add(this->label2);
 			this->Controls->Add(this->label1);
 			this->Controls->Add(this->button3);
@@ -278,6 +296,9 @@ namespace P1 {
 	// clear all that was done so far
 	// deletes all drawn and loaded
     private: System::Void button3_Click(System::Object^  sender, System::EventArgs^  e);
+	
+	// save graph to file
+	private: System::Void button4_Click(System::Object^  sender, System::EventArgs^  e);
 
 	// draw loaded graph
 	private: System::Void drawLoadedGraph(void);
@@ -303,5 +324,6 @@ namespace P1 {
 				this->Font = gcnew System::Drawing::Font("Microsoft Sans Serif", 7);
 			}
 		};
+
 };
 }

@@ -282,6 +282,8 @@ System::Void P1::MyForm::button1_Click(System::Object^  sender, System::EventArg
 	drawLoadedGraph();
 	// redraw the control to see edges
 	pictureBox1->Invalidate();
+
+	delete ofd;
 }
 
 // draws loaded graph as n-sided regular polygon
@@ -354,4 +356,35 @@ System::Void P1::MyForm::button3_Click(System::Object^  sender, System::EventArg
 	// whiten input picturebox
 	pictureBox1->Image = nullptr;
 	pictureBox1->Refresh();
+}
+
+// saves graph to file
+System::Void P1::MyForm::button4_Click(System::Object^  sender, System::EventArgs^  e)
+{
+	SaveFileDialog^ sfd = gcnew SaveFileDialog;
+	sfd->ShowDialog();
+
+	String^ filename = sfd->FileName;
+
+	System::IO::StreamWriter^ fout = gcnew System::IO::StreamWriter(filename);
+
+	// generate all edge pairs uv, where u < v
+	// format: each line is: u v
+	for (auto const& i : gl.neighbors)
+	{
+		for (auto v : i.second)
+		{
+			if (i.first < v)
+			{
+				String^ edge = i.first + " " + v;
+				fout->Write(edge);
+				fout->WriteLine();
+			}
+		}
+	}
+
+	fout->Close();
+
+	delete fout;
+	delete sfd;
 }
