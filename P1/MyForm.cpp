@@ -318,12 +318,7 @@ System::Void P1::MyForm::button3_Click(System::Object^  sender, System::EventArg
 	// erase loaded graph
 	gl.neighbors.clear();
 	gl.components.clear();
-	// whiten l graph picturebox
-	pictureBox2->Image = nullptr;
-	pictureBox2->Refresh();
-	// whiten input picturebox
-	pictureBox1->Image = nullptr;
-	pictureBox1->Refresh();
+
 	// delete vertices
 	for (size_t i = 1; i <= vertexcount; ++i)
 	{
@@ -332,8 +327,17 @@ System::Void P1::MyForm::button3_Click(System::Object^  sender, System::EventArg
 			this->Controls->Remove(b);
 		}
 	}
+
 	// reset all form variables
 	vertexcount = 0;
 	first = true;
 	edges.clear();
+	solution.clear();
+
+	// whiten l graph picturebox
+	pictureBox2->Image = nullptr;
+	pictureBox2->Refresh();
+	// whiten input picturebox
+	pictureBox1->Image = nullptr;
+	pictureBox1->Refresh();
 }
