@@ -90,7 +90,6 @@ System::Void P1::MyForm::button_MouseClick(System::Object^  sender, System::Wind
 	Graphics^ g;
 	g = pictureBox1->CreateGraphics();
 	Pen^ blackPen = gcnew Pen(Color::Black, 1);
-	Pen^ whitePen = gcnew Pen(Color::White, 1);
 
 	Button^ button = safe_cast<Button^>(sender);
 	// mark the button
@@ -112,14 +111,12 @@ System::Void P1::MyForm::button_MouseClick(System::Object^  sender, System::Wind
 		// get outgoing edges
 		for each (size_t n in gl.returnAdjacent(name))
 		{
-			// repaints outgoing edges white
+			// deletes all outgoing edges from edges
 			for each (Control^ b in this->Controls->Find(n.ToString(), true))
 			{
 				int xx = b->Left;
 				int yy = b->Top;
-				p2 = Point(xx, yy);
-				g->DrawLine(whitePen, Point(x, y), p2);
-
+				
 				// erase edge from edges collection; must check both p1,p2 and p2,p1 edges
 				auto it = std::find(edges.begin(), edges.end(), std::tuple<int, int, int, int>(xx, yy, x, y));
 				// check that edge was actually there, then delete
@@ -133,6 +130,8 @@ System::Void P1::MyForm::button_MouseClick(System::Object^  sender, System::Wind
 				}
 			}
 		}
+		// repaint picturebox1 to remove edges
+		pictureBox1->Invalidate();
 
 		// register deletion
 		gl.deleteVertex(name);
@@ -143,9 +142,6 @@ System::Void P1::MyForm::button_MouseClick(System::Object^  sender, System::Wind
 		// checked that valid vertex pair is found
 		if (!first && b1 != b2)
 		{
-			p2 = Point(x, y);
-			g->DrawLine(whitePen, p1, p2);
-
 			// erase edge from edges collection; must check both p1,p2 and p2,p1 edges
 			auto it = std::find(edges.begin(), edges.end(), std::tuple<int, int, int, int>(p1.X, p1.Y, x, y));
 			// check that edge was actually there, then delete
@@ -157,6 +153,8 @@ System::Void P1::MyForm::button_MouseClick(System::Object^  sender, System::Wind
 				if (it != edges.end())
 					edges.erase(it);
 			}
+			// repaint picturebox1 to remove edge
+			pictureBox1->Invalidate();
 
 			b1->BackColor = Color::Black;
 			b2->BackColor = Color::Black;
