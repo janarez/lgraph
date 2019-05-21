@@ -97,22 +97,21 @@ bool Permutation::newPermutation(std::vector<size_t>& usable)
 				// try next in usable
 				for (int j = m - 2; j >= 0; --j)
 				{
-					size_t temp = usable[j];
-					size_t v = usable[m - 1];
-
+					// usable[j] is moved before usable[m-1]
+					size_t v = usable[j];
 					// cannot set smaller permutation
-					if (temp < v) 
-					{
+					if (v < usable[m - 1])
 						return false;
-					}
 
-					usable[j] = v;
-					usable[m-1] = temp;
+					usable.erase(usable.begin() + j);
+					usable.push_back(v);
+
+					// search using fixed usable
 					if (newPermutation(usable))
 						return true;
 					// revert swap
-					usable[j] = temp;
-					usable[m - 1] = v;
+					usable.pop_back();
+					usable.insert(usable.begin() + j, v);
 				}
 				return false;
 			}	
