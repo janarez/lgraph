@@ -121,7 +121,7 @@ bool Permutation::newPermutation(std::vector<size_t>& usable)
 		{
 			size_t temp = usable[m - 1];
 			// cannot set smaller permutation
-			if (temp > usable[m-2])
+			if (temp > usable[m - 2])
 				return false;
 
 			// remove usable[m-1] and place it after pos
@@ -130,10 +130,24 @@ bool Permutation::newPermutation(std::vector<size_t>& usable)
 			// search using fixed usable
 			if (newPermutation(usable))
 				return true;
-			// revert swap
-			usable.erase(usable.begin() + pos);
-			usable.push_back(temp);
 
+			// try all places after pos for the vertex
+			for (int j = pos - 1; j >= 0; --j)
+			{
+				// switch usable[pos] and usable[pos-1]
+				size_t v = usable[j + 1];
+				usable[j + 1] = usable[j];
+				usable[j] = v;
+
+				// search using new usable
+				if (newPermutation(usable))
+					return true;
+			}
+
+			// revert the initial swap
+			usable.erase(usable.begin());
+			usable.push_back(temp);
+			return false;
 		}
 	}
 	// not found
