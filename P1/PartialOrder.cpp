@@ -101,6 +101,13 @@ std::vector<size_t> PartialOrder::createOrdering(void)
 			}
 			++counter;
 		}
+		// note that there is a cycle in cum: no highest element
+		if (counter == max)
+		{
+			std::vector<size_t> empty;
+			return empty;
+		}
+
 		// register highest vertex
 		ordering.push_back(highest);
 

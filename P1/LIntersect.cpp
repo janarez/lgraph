@@ -257,7 +257,15 @@ bool LIntersectionGraph::doPartialOrder(void)
 				return false;
 		}
 	}
-	return true;
+
+	// assign bends from cum
+	bends = cum.createOrdering();
+
+	// check that there wasn't a cycle in cum
+	if (bends.empty())
+		return false;
+	else
+		return true;
 }
 
 // shapes are indexed from zero
@@ -288,7 +296,6 @@ bool LIntersectionGraph::createLGraph(void)
 	else
 	{
 		// solution exists, fill in lshapes
-		bends = cum.createOrdering();
 		fillShapes();
 		return true;
 	}
